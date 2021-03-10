@@ -109,12 +109,6 @@
       "prettier --write"
     ]
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged --allow-empty",
-      "pre-push": "yarn lint:check && yarn prettier:check && yarn test --coverage --watchAll=false"
-    }
-  },
   "jest": {
     "transformIgnorePatterns": [
       "[/\\\\]node_modules[/\\\\](?!(contract-proxy-kit))[/\\\\].*\\.(js|jsx|mjs|cjs|ts|tsx)$",
