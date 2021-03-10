@@ -496,23 +496,29 @@ export const MarketHome: React.FC<Props> = (props: Props) => {
     RemoteData.hasData(categories) && categories.data.length > 0
       ? ([
           {
-            content: <CustomDropdownItem>{'All Categories'}</CustomDropdownItem>,
+            content: <CustomDropdownItem>{'Twitter'}</CustomDropdownItem>,
             onClick: () => {
-              setCategory('All')
+              setCategory('twitter')
             },
           },
-          ...categories.data.map((item: CategoryDataItem) => {
-            return {
-              content: <CustomDropdownItem>{item.id}</CustomDropdownItem>,
-              onClick: () => {
-                setCategory(item.id)
-              },
-            }
-          }),
+          {
+            content: <CustomDropdownItem>{'Substack'}</CustomDropdownItem>,
+            onClick: () => {
+              setCategory('substack')
+            },
+          },
+          // ...categories.data.map((item: CategoryDataItem) => {
+          //   return {
+          //     content: <CustomDropdownItem>{item.id}</CustomDropdownItem>,
+          //     onClick: () => {
+          //       setCategory(item.id)
+          //     },
+          //   }
+          // }),
         ] as Array<DropdownItemProps>)
       : [
           {
-            content: <CustomDropdownItem>{'All Categories'}</CustomDropdownItem>,
+            content: <CustomDropdownItem>{'Twitter'}</CustomDropdownItem>,
           },
         ]
 
