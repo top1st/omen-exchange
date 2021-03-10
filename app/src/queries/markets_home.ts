@@ -103,22 +103,22 @@ export const buildQueryMarkets = (options: BuildQueryType = DEFAULT_OPTIONS) => 
     state === MarketStates.finalizing ? 'currentAnswer_not: null' : '',
     state === MarketStates.arbitrating ? 'isPendingArbitration: true' : '',
     whitelistedCreators ? 'creator_in: $accounts' : '',
-    category === 'All' ? '' : 'category: $category',
+    category === 'All' ? 'category: "twitter"' : 'category: $category',
     title ? 'title_contains: $title' : '',
     currency ? 'collateralToken: $currency' : '',
     arbitrator ? 'arbitrator: $arbitrator' : 'arbitrator_in: $knownArbitrators',
     templateId ? 'templateId: $templateId' : whitelistedTemplateIds ? 'templateId_in: ["0", "1", "2", "6"]' : '',
     'fee_lte: $fee',
     `timeout_gte: ${MIN_TIMEOUT}`,
-    networkId === networkIds.XDAI || networkId === networkIds.SOKOL
-      ? 'curatedByDxDaoOrKleros: false'
-      : curationSource === CurationSource.DXDAO
-      ? `curatedByDxDao: true`
-      : curationSource === CurationSource.KLEROS
-      ? `klerosTCRregistered: true`
-      : curationSource === CurationSource.ALL_SOURCES
-      ? `curatedByDxDaoOrKleros: true`
-      : 'curatedByDxDaoOrKleros: false', // This is option CurationSource.NO_SOURCES (i.e. show unverified results.),
+    // networkId === networkIds.XDAI || networkId === networkIds.SOKOL
+    //   ? 'curatedByDxDaoOrKleros: false'
+    //   : curationSource === CurationSource.DXDAO
+    //   ? `curatedByDxDao: true`
+    //   : curationSource === CurationSource.KLEROS
+    //   ? `klerosTCRregistered: true`
+    //   : curationSource === CurationSource.ALL_SOURCES
+    //   ? `curatedByDxDaoOrKleros: true`
+    //   : 'curatedByDxDaoOrKleros: false', // This is option CurationSource.NO_SOURCES (i.e. show unverified results.),
   ]
     .filter(s => s.length)
     .join(',')
