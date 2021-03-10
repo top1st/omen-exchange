@@ -67,13 +67,13 @@ class MenuStep extends Component<Props, State> {
     steps: [
       {
         name: 'Configure Market',
-        value: 1,
+        value: 1
       },
       {
         name: 'Fund Market',
-        value: 2,
-      },
-    ],
+        value: 2
+      }
+    ]
   }
 
   public render() {

@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useHistory } from 'react-router'
 import styled from 'styled-components'
 
 import { ConnectedWeb3Context } from '../../../../hooks/connectedWeb3'
@@ -14,7 +15,8 @@ import {
   MarketTypes,
   MarketsSortCriteria,
 } from '../../../../util/types'
-import { ButtonRound } from '../../../button'
+import { ButtonCircle, ButtonConnectWallet, ButtonDisconnectWallet, ButtonRound } from '../../../button'
+import { DateField } from '../../../common'
 import {
   Dropdown,
   DropdownDirection,
@@ -22,6 +24,7 @@ import {
   DropdownPosition,
   DropdownVariant,
 } from '../../../common/form/dropdown'
+import { IconAdd } from '../../../common/icons/IconAdd'
 import { IconFilter } from '../../../common/icons/IconFilter'
 import { IconSearch } from '../../../common/icons/IconSearch'
 import { InlineLoading } from '../../../loading'
@@ -205,6 +208,23 @@ const BottomContents = styled.div`
   border-top: 1px solid ${props => props.theme.borders.borderColor};
 `
 
+const ButtonCreateDesktop = styled(ButtonRound)`
+  display: none;
+
+  @media (min-width: ${props => props.theme.themeBreakPoints.md}) {
+    display: flex;
+  }
+`
+
+const ButtonCreateMobile = styled(ButtonCircle)`
+  display: flex;
+  margin-left: auto;
+
+  @media (min-width: ${props => props.theme.themeBreakPoints.md}) {
+    display: none;
+  }
+`
+
 const DisplayButtonWrapper = styled.div`
   padding: 0 15px 0 25px;
 `
@@ -223,6 +243,18 @@ const FiltersLeftWrapper = styled.div`
   }
   @media (max-width: ${props => props.theme.themeBreakPoints.sm}) {
     margin-bottom: 12px;
+  }
+`
+
+const Grid3AutoColumns = styled.div`
+  display: grid;
+  grid-template-columns: 200px 200px 200px;
+  grid-template-rows: 200px 200px;
+  grid-auto-flow: row;
+  column-gap: 10px;
+  row-gap: 25px;
+  & > a:nth-child(-n + 3) {
+    border: 1px solid green;
   }
 `
 
@@ -485,12 +517,21 @@ export const MarketHome: React.FC<Props> = (props: Props) => {
     }
   })
 
+  const ideaAccountItems: Array<DropdownItemProps> = [{ content: '@elonMusk' }, { content: '@spaceX' }]
+
   const marketTypeItems: Array<DropdownItemProps> = marketTypes.map(item => {
     return {
       content: <CustomDropdownItem>{item.title} Markets</CustomDropdownItem>,
       onClick: item.onClick,
     }
   })
+
+  const history = useHistory()
+
+  const createButtonProps = {
+    disabled: false,
+    onClick: () => history.push('/create'),
+  }
 
   const categoryItems: Array<DropdownItemProps> =
     RemoteData.hasData(categories) && categories.data.length > 0
@@ -550,13 +591,14 @@ export const MarketHome: React.FC<Props> = (props: Props) => {
   return (
     <>
       <Actions>
-        <MarketsTypeDropdown
+        {/* <MarketsTypeDropdown
           currentItem={marketTypes.findIndex(i => i.type === templateId)}
           dirty={true}
           dropdownDirection={DropdownDirection.downwards}
           dropdownVariant={DropdownVariant.card}
           items={marketTypeItems}
-        />
+        /> */}
+        <div style={{ display: 'flex', alignItems: 'center' }}>Market </div>
         <MarketsDropdown
           currentItem={
             RemoteData.hasData(categories) ? categories.data.findIndex(i => i.id === decodeURI(category)) + 1 : 0
@@ -574,8 +616,21 @@ export const MarketHome: React.FC<Props> = (props: Props) => {
           items={filterItems}
         />
       </Actions>
+      <Actions>
+        <SortDropdown items={ideaAccountItems} />
+        <div style={{ display: 'flex', alignItems: 'center' }}>will outrank </div>
+        <SortDropdown items={ideaAccountItems} />
+      </Actions>
+      <Actions>
+        <div style={{ display: 'flex', alignItems: 'center', width: '50px' }}>on </div>
+        <DateField name="resolution" onChange={(e: any) => console.log(e)} placeholder="Select closing date" />
+      </Actions>
+      <ButtonCreateDesktop {...createButtonProps}>Create Market</ButtonCreateDesktop>
+      <ButtonCreateMobile {...createButtonProps}>
+        <IconAdd />
+      </ButtonCreateMobile>
       <ListCard>
-        <TopContents>
+        {/* <TopContents>
           <FiltersWrapper>
             <FiltersLeftWrapper>
               <ButtonFilterStyled active={showAdvancedFilters} onClick={toggleFilters}>
@@ -603,8 +658,8 @@ export const MarketHome: React.FC<Props> = (props: Props) => {
               />
             </FiltersControls>
           </FiltersWrapper>
-        </TopContents>
-        {showSearch && <Search onChange={setTitle} value={title} />}
+        </TopContents> */}
+        {/* {showSearch && <Search onChange={setTitle} value={title} />}
         {showAdvancedFilters && (
           <AdvancedFilters
             arbitrator={arbitrator}
@@ -616,15 +671,17 @@ export const MarketHome: React.FC<Props> = (props: Props) => {
             onChangeCurrency={setCurrency}
             onChangeTemplateId={setTemplateId}
           />
-        )}
+        )} */}
         <ListWrapper>
-          {!isFiltering &&
-            RemoteData.hasData(markets) &&
-            RemoteData.is.success(markets) &&
-            markets.data.length > 0 &&
-            markets.data.slice(0, count).map(item => {
-              return <ListItem currentFilter={currentFilter} key={item.address} market={item}></ListItem>
-            })}
+          {!isFiltering && RemoteData.hasData(markets) && RemoteData.is.success(markets) && markets.data.length > 0 && (
+            <Grid3AutoColumns>
+              {markets.data.slice(0, count).map(item => {
+                return (
+                  <ListItem count={count} currentFilter={currentFilter} key={item.address} market={item}></ListItem>
+                )
+              })}
+            </Grid3AutoColumns>
+          )}
           {noOwnMarkets && <NoOwnMarkets>You have not created or participated in any markets yet.</NoOwnMarkets>}
           {noMarketsAvailable && <NoMarketsAvailable>No markets available.</NoMarketsAvailable>}
           {showFilteringInlineLoading && <InlineLoading message="Loading Markets..." />}

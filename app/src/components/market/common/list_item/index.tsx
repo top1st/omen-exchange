@@ -28,6 +28,7 @@ const Wrapper = styled(NavLink)`
   justify-content: center;
   padding: 22px 25px;
   text-decoration: none;
+  position: relative;
 
   &:active,
   &:hover {
@@ -73,9 +74,24 @@ const Separator = styled.span`
   color: ${props => props.theme.colors.verticalDivider};
 `
 
+const FeatureTitle = styled.div`
+  position: absolute;
+  top: -20px;
+  color: black;
+  left: 0;
+`
+
+const FeatureSpan = styled.span`
+  background: green;
+  border-radius: 3px;
+  padding: 1px;
+  border-bottom: none;
+`
+
 interface Props extends HTMLAttributes<HTMLDivElement> {
   market: MarketMakerDataItem
   currentFilter: any
+  count: number
 }
 
 const logger = getLogger('Market::ListItem')
@@ -84,7 +100,7 @@ export const ListItem: React.FC<Props> = (props: Props) => {
   const context = useConnectedWeb3Context()
   const { account, library: provider } = context
 
-  const { currentFilter, market } = props
+  const { count, currentFilter, market } = props
   const {
     address,
     collateralToken,
@@ -160,6 +176,11 @@ export const ListItem: React.FC<Props> = (props: Props) => {
 
   return (
     <Wrapper to={`/${address}`}>
+      {count <= 3 && (
+        <FeatureTitle>
+          <FeatureSpan>Featured</FeatureSpan> {resolutionDate}
+        </FeatureTitle>
+      )}
       <Title>{isScalar ? scalarTitle : title}</Title>
       <Info>
         <IconStar></IconStar>

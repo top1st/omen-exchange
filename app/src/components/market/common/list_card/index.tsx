@@ -4,10 +4,10 @@ import styled from 'styled-components'
 import { Card } from '../../../common/card'
 
 const CardStyled = styled(Card)`
-  margin: 0 auto;
+  margin: 40px auto;
   max-width: 100%;
-  min-height: 530px;
-  width: ${props => props.theme.mainContainer.maxWidth};
+  // min-height: 530px;
+  min-width: ${props => props.theme.mainContainer.maxWidth};
 `
 
 interface Props extends HTMLAttributes<HTMLDivElement> {

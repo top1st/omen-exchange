@@ -103,7 +103,9 @@ export const buildQueryMarkets = (options: BuildQueryType = DEFAULT_OPTIONS) => 
     state === MarketStates.finalizing ? 'currentAnswer_not: null' : '',
     state === MarketStates.arbitrating ? 'isPendingArbitration: true' : '',
     whitelistedCreators ? 'creator_in: $accounts' : '',
+    // @todo recomment this
     category === 'All' ? 'category: "twitter"' : 'category: $category',
+    // category === 'All' ? '' : 'category: $category',
     title ? 'title_contains: $title' : '',
     currency ? 'collateralToken: $currency' : '',
     arbitrator ? 'arbitrator: $arbitrator' : 'arbitrator_in: $knownArbitrators',
