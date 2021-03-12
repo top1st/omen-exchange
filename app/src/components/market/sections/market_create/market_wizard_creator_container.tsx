@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { useHistory } from 'react-router'
+import { useHistory, useLocation } from 'react-router'
 
 import { useConnectedCPKContext, useContracts } from '../../../../hooks'
 import { useConnectedWeb3Context } from '../../../../hooks/connectedWeb3'

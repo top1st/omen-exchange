@@ -128,7 +128,9 @@ interface Props {
   addCategoryCustom: (category: string) => void
   handleArbitratorChange: (arbitrator: Arbitrator) => any
 
-  handleChange: (event: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement> | BigNumberInputReturn) => any
+  handleChange: (
+    event: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement> | BigNumberInputReturn | any,
+  ) => any
   handleClearQuestion: () => any
   handleDateChange: (date: Date | null) => any
   handleOutcomesChange: (newOutcomes: Outcome[]) => any
@@ -256,9 +258,15 @@ const AskQuestionStep = (props: Props) => {
     handleChange(e)
   }
 
+  useEffect(() => {
+    if (outcomeNames[0] && outcomeNames[1]) {
+      handleChange({ name: 'question', value: `${outcomeNames[0]} will outrank ${outcomeNames[1]}` })
+    }
+  }, [outcomes])
+
   return (
     <CreateCard style={{ paddingTop: 20, paddingBottom: 20 }}>
-      <CategoryImportWrapper>
+      {/* <CategoryImportWrapper>
         <FormStateButton
           active={currentFormState === FormState.categorical}
           onClick={() => setCurrentFormState(FormState.categorical)}
@@ -279,7 +287,7 @@ const AskQuestionStep = (props: Props) => {
         >
           Import Market
         </FormStateButton>
-      </CategoryImportWrapper>
+      </CategoryImportWrapper> */}
       {currentFormState === FormState.import ? (
         <ImportMarketContent
           context={context}
@@ -330,6 +338,7 @@ const AskQuestionStep = (props: Props) => {
           />
           <Outcomes
             canAddOutcome={canAddOutcome}
+            category={category}
             disabled={!!loadedQuestionId}
             onChange={handleOutcomesChange}
             outcomes={outcomes}

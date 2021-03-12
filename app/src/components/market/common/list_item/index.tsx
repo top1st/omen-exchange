@@ -20,6 +20,8 @@ import {
 import { MarketMakerDataItem, Token } from '../../../../util/types'
 import { IconStar } from '../../../common/icons/IconStar'
 
+import { IdeaAccount } from './idea_account'
+
 const Wrapper = styled(NavLink)`
   border-bottom: 1px solid ${props => props.theme.borders.borderColor};
   cursor: pointer;
@@ -88,6 +90,12 @@ const FeatureSpan = styled.span`
   border-bottom: none;
 `
 
+const AccountsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
 interface Props extends HTMLAttributes<HTMLDivElement> {
   market: MarketMakerDataItem
   currentFilter: any
@@ -101,6 +109,7 @@ export const ListItem: React.FC<Props> = (props: Props) => {
   const { account, library: provider } = context
 
   const { count, currentFilter, market } = props
+  const { category } = market
   const {
     address,
     collateralToken,
@@ -174,6 +183,8 @@ export const ListItem: React.FC<Props> = (props: Props) => {
     }
   }
 
+  const [first, , , second] = title.split(' ')
+
   return (
     <Wrapper to={`/${address}`}>
       {count <= 3 && (
@@ -181,8 +192,17 @@ export const ListItem: React.FC<Props> = (props: Props) => {
           <FeatureSpan>Featured</FeatureSpan> {resolutionDate}
         </FeatureTitle>
       )}
-      <Title>{isScalar ? scalarTitle : title}</Title>
-      <Info>
+      {/* <Title>{isScalar ? scalarTitle : title}</Title> */}
+      <AccountsWrapper>
+        <IdeaAccount category={category} name={first} price={outcomeTokenMarginalPrices[0]} />
+        <div style={{ width: '50px', textAlign: 'center' }}>vs</div>
+        <IdeaAccount category={category} name={second} price={outcomeTokenMarginalPrices[1]} />
+      </AccountsWrapper>
+
+      <div style={{ textAlign: 'center' }}>Volume</div>
+      <div style={{ textAlign: 'center' }}>{`${formatToShortNumber(volume || '')} ${symbol}`}</div>
+
+      {/* <Info>
         <IconStar></IconStar>
         <Outcome>
           {isScalar
@@ -208,7 +228,7 @@ export const ListItem: React.FC<Props> = (props: Props) => {
             `${formatToShortNumber(formattedLiquidity)} ${symbol} - Liquidity`}
           {currentFilter.sortBy === 'creationTimestamp' && `${formattedCreationDate} - Created`}
         </span>
-      </Info>
+      </Info> */}
     </Wrapper>
   )
 }

@@ -6,6 +6,7 @@ import { Card } from '../../../common/card'
 const CardStyled = styled(Card)`
   margin: 40px auto;
   max-width: 100%;
+  width: 920px;
   // min-height: 530px;
   min-width: ${props => props.theme.mainContainer.maxWidth};
 `

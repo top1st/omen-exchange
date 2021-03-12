@@ -55,7 +55,7 @@
     "import/no-unresolved": 0,
     "import/no-extraneous-dependencies": ["error", { "optionalDependencies": false, "peerDependencies": false }],
     "import/order": [
-      "error",
+      "warn",
       {
         "groups": ["builtin", "external", "parent", "sibling", "index"],
         "newlines-between": "always",

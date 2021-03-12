@@ -154,3 +154,44 @@ export const queryTopCategories = gql`
     }
   }
 `
+
+export const queryIdeaAccounts = gql`
+  {
+    ideaMarkets(where: { marketID: 1 }) {
+      tokens(skip: 0, first: 10, orderBy: rank, orderDirection: asc) {
+        id
+        tokenID
+        name
+        supply
+        holders
+        marketCap
+        rank
+        tokenOwner
+        daiInToken
+        invested
+        listedAt
+        lockedAmount
+        lockedPercentage
+        latestPricePoint {
+          timestamp
+          counter
+          oldPrice
+          price
+        }
+        earliestPricePoint: pricePoints(
+          first: 1
+          orderBy: "timestamp"
+          orderDirection: "asc"
+          where: { timestamp_gt: "1614796698" }
+        ) {
+          counter
+          timestamp
+          oldPrice
+          price
+        }
+        dayVolume
+        dayChange
+      }
+    }
+  }
+`

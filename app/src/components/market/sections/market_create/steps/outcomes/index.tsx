@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import { useIdeaAccounts } from '../../../../../../hooks/useMarkets'
 
 import { ButtonCircle } from '../../../../../button'
-import { FormRowLink, SimpleTextfield } from '../../../../../common'
+import { Dropdown, FormRowLink, SimpleTextfield } from '../../../../../common'
+import { DropdownItemProps } from '../../../../../common/form/dropdown'
 import { IconAdd, IconRemove } from '../../../../../common/icons'
 import {
   OutcomeItemLittleBallOfJoyAndDifferentColors,
@@ -57,6 +59,7 @@ export interface Outcome {
 
 interface Props {
   canAddOutcome: boolean
+  category: string
   disabled: boolean
   onChange: (newOutcomes: Outcome[]) => any
   outcomes: Outcome[]
@@ -64,7 +67,7 @@ interface Props {
 }
 
 const Outcomes = (props: Props) => {
-  const { canAddOutcome, disabled, outcomes } = props
+  const { category, disabled, outcomes } = props
   const [uniformProbabilities, setIsUniform] = useState<boolean>(true)
 
   const uniform = (outcomes: Outcome[]): Outcome[] => {
@@ -95,12 +98,36 @@ const Outcomes = (props: Props) => {
 
   const canRemove = outcomes.length > 2
 
-  const outcomesToRender = props.outcomes.map((outcome: Outcome, index: number) => (
+  const possibleSelection = useIdeaAccounts(category).accounts.names
+
+  console.log(outcomes)
+
+  const outComeItems: Array<Array<DropdownItemProps>> = [
+    possibleSelection.map(ps => ({
+      content: ps,
+      onClick: () => {
+        props.onChange(props.outcomes.map((tcome, tIndex) => (0 !== tIndex ? tcome : { ...tcome, name: ps })))
+      },
+    })),
+    possibleSelection.map(ps => ({
+      content: ps,
+      onClick: () => {
+        props.onChange(props.outcomes.map((tcome, tIndex) => (1 !== tIndex ? tcome : { ...tcome, name: ps })))
+      },
+    })),
+  ]
+
+  const outcomeRender = (outcome: Outcome, index: number) => (
     <OutcomesTR key={index}>
       <OutcomesTD>
         <OutcomeItemWrapper readOnly={false}>
           <OutcomeItemLittleBallOfJoyAndDifferentColors outcomeIndex={index} />
-          <SimpleTextfield
+          <Dropdown
+            currentItem={outcome.name ? possibleSelection.findIndex(ps => ps === outcome.name) : undefined}
+            items={outComeItems[index]}
+            placeholder="Select Account"
+          />
+          {/* <SimpleTextfield
             onChange={e =>
               props.onChange(
                 props.outcomes.map((tcome, tIndex) => (index !== tIndex ? tcome : { ...tcome, name: e.target.value })),
@@ -110,7 +137,7 @@ const Outcomes = (props: Props) => {
             style={{ flex: 1 }}
             type="text"
             value={outcome.name}
-          />
+          /> */}
         </OutcomeItemWrapper>
       </OutcomesTD>
       <OutcomesTD>
@@ -148,7 +175,20 @@ const Outcomes = (props: Props) => {
         </RowWrapper>
       </OutcomesTD>
     </OutcomesTR>
-  ))
+  )
+
+  const outcomesToRender = () => {
+    const { outcomes } = props
+    const toRender = []
+    toRender.push(outcomeRender(outcomes[0], 0))
+    toRender.push(
+      <tr key="autorank">
+        <td style={{ paddingLeft: '24px' }}>Will Outrank</td>
+      </tr>,
+    )
+    toRender.push(outcomeRender(outcomes[1], 1))
+    return toRender
+  }
 
   const manualProbabilities = !uniformProbabilities
   const manualProbabilitiesAndNoOutcomes = manualProbabilities && outcomes.length === 0
@@ -177,13 +217,13 @@ const Outcomes = (props: Props) => {
               </OutcomesTH>
             </OutcomesTR>
           </OutcomesTHead>
-          <OutcomesTBody>{outcomesToRender}</OutcomesTBody>
+          <OutcomesTBody>{outcomesToRender()}</OutcomesTBody>
         </OutcomesTable>
-        {canAddOutcome && (
+        {/* {canAddOutcome && (
           <CustomButtonCircleAdd data-testid="new-outcome-button" onClick={addNewOutcome} title="Add new outcome">
             <IconAdd />
           </CustomButtonCircleAdd>
-        )}
+        )} */}
       </OutcomesTableWrapper>
       {manualProbabilitiesAndNoOutcomes && (
         <Note>

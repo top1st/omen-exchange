@@ -181,7 +181,7 @@ const Actions = styled.div`
   }
   @media (min-width: ${props => props.theme.themeBreakPoints.md}) {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     > div:first-child {
       margin-right: 14px;
       margin-bottom: 0;
@@ -248,7 +248,7 @@ const FiltersLeftWrapper = styled.div`
 
 const Grid3AutoColumns = styled.div`
   display: grid;
-  grid-template-columns: 200px 200px 200px;
+  grid-template-columns: 300px 300px 300px;
   grid-template-rows: 200px 200px;
   grid-auto-flow: row;
   column-gap: 10px;
@@ -256,6 +256,19 @@ const Grid3AutoColumns = styled.div`
   & > a:nth-child(-n + 3) {
     border: 1px solid green;
   }
+`
+
+const CreateWrapper = styled.div`
+  background: linear-gradient(180deg, #011134, #032066);
+  border-radius: 10px;
+  width: 920px;
+  text-align: center;
+  padding: 30px;
+  color: white;
+`
+
+const MarketHomeWrapper = styled.div`
+  background-color: #f6f6f6;
 `
 
 interface Props {
@@ -268,6 +281,7 @@ interface Props {
   categories: RemoteData<CategoryDataItem[]>
   moreMarkets: boolean
   pageIndex: number
+  ideaAccounts: string[]
   onFilterChange: (filter: MarketFilters) => void
   onUpdatePageSize: (size: number) => void
   onLoadNextPage: () => void
@@ -283,6 +297,7 @@ export const MarketHome: React.FC<Props> = (props: Props) => {
     count,
     currentFilter,
     fetchMyMarkets,
+    ideaAccounts,
     isFiltering = false,
     markets,
     moreMarkets,
@@ -517,7 +532,21 @@ export const MarketHome: React.FC<Props> = (props: Props) => {
     }
   })
 
-  const ideaAccountItems: Array<DropdownItemProps> = [{ content: '@elonMusk' }, { content: '@spaceX' }]
+  const [ideaAccount1, setIdeaAccount1] = useState('')
+  const [ideaAccount2, setIdeaAccount2] = useState('')
+  const ideaAccountItems1: Array<DropdownItemProps> = ideaAccounts.map(ac => ({
+    content: ac,
+    onClick: () => setIdeaAccount1(ac),
+  }))
+  const ideaAccountItems2: Array<DropdownItemProps> = ideaAccounts.map(ac => ({
+    content: ac,
+    onClick: () => setIdeaAccount2(ac),
+  }))
+
+  // useEffect(() => {
+  //   setIdeaAccount1(ideaAccounts[0])
+  //   setIdeaAccount2(ideaAccounts[1])
+  // }, [ideaAccounts])
 
   const marketTypeItems: Array<DropdownItemProps> = marketTypes.map(item => {
     return {
@@ -528,40 +557,43 @@ export const MarketHome: React.FC<Props> = (props: Props) => {
 
   const history = useHistory()
 
+  const [selectedDate, setSelectedDate] = useState(null)
+
   const createButtonProps = {
     disabled: false,
-    onClick: () => history.push('/create'),
+    onClick: () => history.push({ pathname: '/create', state: { selectedDate, ideaAccount1, ideaAccount2 } }),
   }
 
-  const categoryItems: Array<DropdownItemProps> =
-    RemoteData.hasData(categories) && categories.data.length > 0
-      ? ([
-          {
-            content: <CustomDropdownItem>{'Twitter'}</CustomDropdownItem>,
-            onClick: () => {
-              setCategory('twitter')
-            },
-          },
-          {
-            content: <CustomDropdownItem>{'Substack'}</CustomDropdownItem>,
-            onClick: () => {
-              setCategory('substack')
-            },
-          },
-          // ...categories.data.map((item: CategoryDataItem) => {
-          //   return {
-          //     content: <CustomDropdownItem>{item.id}</CustomDropdownItem>,
-          //     onClick: () => {
-          //       setCategory(item.id)
-          //     },
-          //   }
-          // }),
-        ] as Array<DropdownItemProps>)
-      : [
-          {
-            content: <CustomDropdownItem>{'Twitter'}</CustomDropdownItem>,
-          },
-        ]
+  const categoryItems: Array<DropdownItemProps> = [
+    {
+      content: <CustomDropdownItem>{'twitter'}</CustomDropdownItem>,
+      onClick: () => {
+        setCategory('twitter')
+      },
+    },
+    {
+      content: <CustomDropdownItem>{'substack'}</CustomDropdownItem>,
+      onClick: () => {
+        setCategory('substack')
+      },
+    },
+  ]
+  // RemoteData.hasData(categories) && categories.data.length > 0
+  //   ? (
+  //       ...categories.data.map((item: CategoryDataItem) => {
+  //         return {
+  //           content: <CustomDropdownItem>{item.id}</CustomDropdownItem>,
+  //           onClick: () => {
+  //             setCategory(item.id)
+  //           },
+  //         }
+  //       }),
+  //     ] as Array<DropdownItemProps>)
+  //   : [
+  //       {
+  //         content: <CustomDropdownItem>{'Twitter'}</CustomDropdownItem>,
+  //       },
+  //     ]
 
   const sizeOptions = [4, 8, 12]
 
@@ -589,46 +621,69 @@ export const MarketHome: React.FC<Props> = (props: Props) => {
   const disableLoadPrevButton = pageIndex === 0 || RemoteData.is.loading(markets) || RemoteData.is.reloading(markets)
 
   return (
-    <>
-      <Actions>
-        {/* <MarketsTypeDropdown
+    <MarketHomeWrapper>
+      <CreateWrapper>
+        <h3>Go head-to-head against your critics</h3>
+        <Actions>
+          {/* <MarketsTypeDropdown
           currentItem={marketTypes.findIndex(i => i.type === templateId)}
           dirty={true}
           dropdownDirection={DropdownDirection.downwards}
           dropdownVariant={DropdownVariant.card}
           items={marketTypeItems}
         /> */}
-        <div style={{ display: 'flex', alignItems: 'center' }}>Market </div>
-        <MarketsDropdown
-          currentItem={
-            RemoteData.hasData(categories) ? categories.data.findIndex(i => i.id === decodeURI(category)) + 1 : 0
-          }
-          dirty={true}
-          dropdownDirection={DropdownDirection.downwards}
-          dropdownVariant={DropdownVariant.card}
-          items={categoryItems}
-        />
-        <MarketsFilterDropdown
-          currentItem={filters.findIndex(i => i.state === state)}
-          dirty={true}
-          dropdownDirection={DropdownDirection.downwards}
-          dropdownVariant={DropdownVariant.card}
-          items={filterItems}
-        />
-      </Actions>
-      <Actions>
-        <SortDropdown items={ideaAccountItems} />
-        <div style={{ display: 'flex', alignItems: 'center' }}>will outrank </div>
-        <SortDropdown items={ideaAccountItems} />
-      </Actions>
-      <Actions>
-        <div style={{ display: 'flex', alignItems: 'center', width: '50px' }}>on </div>
-        <DateField name="resolution" onChange={(e: any) => console.log(e)} placeholder="Select closing date" />
-      </Actions>
-      <ButtonCreateDesktop {...createButtonProps}>Create Market</ButtonCreateDesktop>
-      <ButtonCreateMobile {...createButtonProps}>
-        <IconAdd />
-      </ButtonCreateMobile>
+          <div style={{ display: 'flex', alignItems: 'center' }}>Market </div>
+          <div style={{ width: '150px', position: 'relative' }}>
+            <MarketsDropdown
+              currentItem={['twitter', 'substack'].findIndex(ct => ct === category)}
+              dirty={true}
+              dropdownDirection={DropdownDirection.downwards}
+              dropdownVariant={DropdownVariant.card}
+              items={categoryItems}
+            />
+          </div>
+          <div style={{ width: '150px', position: 'relative' }}>
+            <MarketsFilterDropdown
+              currentItem={filters.findIndex(i => i.state === state)}
+              dirty={true}
+              dropdownDirection={DropdownDirection.downwards}
+              dropdownVariant={DropdownVariant.card}
+              items={filterItems}
+            />
+          </div>
+        </Actions>
+        <Actions>
+          <SortDropdown
+            currentItem={ideaAccountItems1.findIndex(i => i.content === ideaAccount1) || undefined}
+            items={ideaAccountItems1}
+            placeholder="Select Account"
+          />
+          <div style={{ display: 'flex', alignItems: 'center' }}>will outrank </div>
+          <SortDropdown
+            currentItem={ideaAccountItems1.findIndex(i => i.content === ideaAccount2) || undefined}
+            items={ideaAccountItems2}
+            placeholder="Select Account"
+          />
+        </Actions>
+        <Actions>
+          <div style={{ display: 'flex', alignItems: 'center', width: '20px' }}>on </div>
+          <div style={{ width: '200px' }}>
+            <DateField
+              name="resolution"
+              onChange={(date: any) => setSelectedDate(date)}
+              placeholder="Select closing date"
+              selected={selectedDate}
+            />
+          </div>
+        </Actions>
+        <Actions>
+          <ButtonCreateDesktop {...createButtonProps}>Create Market</ButtonCreateDesktop>
+          <ButtonCreateMobile {...createButtonProps}>
+            <IconAdd />
+          </ButtonCreateMobile>
+        </Actions>
+      </CreateWrapper>
+
       <ListCard>
         {/* <TopContents>
           <FiltersWrapper>
@@ -706,6 +761,6 @@ export const MarketHome: React.FC<Props> = (props: Props) => {
           </LoadMoreWrapper>
         </BottomContents>
       </ListCard>
-    </>
+    </MarketHomeWrapper>
   )
 }

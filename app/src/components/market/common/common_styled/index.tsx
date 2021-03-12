@@ -20,7 +20,9 @@ export const OutcomesTableWrapper = styled.div<{ borderBottom?: boolean }>`
   margin-left: -${props => props.theme.cards.paddingHorizontal};
   margin-right: -${props => props.theme.cards.paddingHorizontal};
   min-height: 50px;
-  overflow-x: auto;
+  overflow-x: visiable;
+  position: relative;
+  z-index: 999;
   ${({ borderBottom, theme }) =>
     borderBottom &&
     `border-bottom: ${`1px solid ${theme.borders.borderDisabled}`};
@@ -126,7 +128,8 @@ export const OutcomeItemWrapper = styled.div<{ readOnly: boolean }>`
   display: flex;
   background-color: ${props => props.theme.textfield.backgroundColor};
   border-color: ${props => props.theme.textfield.borderColor};
-  border-style: ${props => props.theme.textfield.borderStyle};
+  // border-style: ${props => props.theme.textfield.borderStyle};
+  border-style: none;
   border-width: ${props => props.theme.textfield.borderWidth};
   border-radius: ${props => props.theme.textfield.borderRadius};
   padding: 0 ${props => props.theme.textfield.paddingHorizontal};

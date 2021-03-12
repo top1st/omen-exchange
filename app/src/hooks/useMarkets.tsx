@@ -1,7 +1,8 @@
 import { useQuery } from '@apollo/react-hooks'
-import React from 'react'
+import React, { useMemo } from 'react'
 
-import { buildQueryMarkets, buildQueryMyMarkets } from '../queries/markets_home'
+import { buildQueryMarkets, buildQueryMyMarkets, queryIdeaAccounts } from '../queries/markets_home'
+import { IdeaMarketService } from '../services/ideamarkets'
 import {
   BuildQueryType,
   GraphMarketMakerDataItem,
@@ -113,4 +114,17 @@ export const useMarkets = (options: Options): any => {
   }, [arbitrator, currency, curationSource, category, state, sortBy, templateId])
 
   return { markets, error, fetchMore, loading, moreMarkets }
+}
+
+export const useIdeaAccounts = (category: string) => {
+  const { library: provider } = useConnectedWeb3Context()
+  const imarketService = useMemo(() => new IdeaMarketService(provider), [provider])
+  const [accounts, setAccounts] = React.useState({ names: ['', ''] })
+
+  React.useEffect(() => {
+    imarketService.getIdeaMarketAccounts(category).then(names => {
+      setAccounts(names)
+    })
+  }, [provider, category])
+  return { accounts }
 }

@@ -352,7 +352,7 @@ export const Dropdown: React.FC<Props> = props => {
     return items[getValidItemIndex(itemIndex)].extraContent
   }
 
-  const [currentItemIndex, setCurrentItemIndex] = useState<number>(0)
+  const [currentItemIndex, setCurrentItemIndex] = useState<number>(-1)
   const [isDirty, setIsDirty] = useState<boolean>(dirty)
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [dropdownPaddingRight, setDropdownPaddingRight] = useState(8)
@@ -387,6 +387,16 @@ export const Dropdown: React.FC<Props> = props => {
       setIsOpen(true)
     }
   }, [isOpen])
+
+  useEffect(() => {
+    console.log(currentItem)
+    if (currentItem > -1 && !isDirty) {
+      console.log('set to true')
+      setIsDirty(true)
+    }
+  }, [currentItem])
+
+  console.log(isDirty)
 
   const itemIndex = currentItem && currentItem > -1 ? currentItem : currentItemIndex
   const activeItem = getItem(itemIndex)

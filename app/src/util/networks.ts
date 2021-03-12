@@ -12,6 +12,7 @@ import {
   GRAPH_SOKOL_WS,
   GRAPH_XDAI_HTTP,
   GRAPH_XDAI_WS,
+  IDEAMARKET_GRAPH_MAINNET_HTTP,
   INFURA_PROJECT_ID,
   KLEROS_CURATE_GRAPH_MAINNET_HTTP,
   KLEROS_CURATE_GRAPH_MAINNET_WS,
@@ -55,6 +56,7 @@ interface Network {
   graphWsUri: string
   klerosCurateGraphHttpUri: string
   klerosCurateGraphWsUri: string
+  ideaMarketGraphHttpUri: string
   realitioTimeout: number
   earliestBlockToCheck: number
   omenTCRListId: number
@@ -99,6 +101,7 @@ const networks: { [K in NetworkId]: Network } = {
     graphWsUri: GRAPH_MAINNET_WS,
     klerosCurateGraphHttpUri: KLEROS_CURATE_GRAPH_MAINNET_HTTP,
     klerosCurateGraphWsUri: KLEROS_CURATE_GRAPH_MAINNET_WS,
+    ideaMarketGraphHttpUri: IDEAMARKET_GRAPH_MAINNET_HTTP,
     realitioTimeout: 86400,
     earliestBlockToCheck: EARLIEST_MAINNET_BLOCK_TO_CHECK,
     omenTCRListId: 3,
@@ -137,6 +140,7 @@ const networks: { [K in NetworkId]: Network } = {
     graphWsUri: GRAPH_RINKEBY_WS,
     klerosCurateGraphHttpUri: KLEROS_CURATE_GRAPH_RINKEBY_HTTP,
     klerosCurateGraphWsUri: KLEROS_CURATE_GRAPH_RINKEBY_WS,
+    ideaMarketGraphHttpUri: IDEAMARKET_GRAPH_MAINNET_HTTP,
     realitioTimeout: 180,
     earliestBlockToCheck: EARLIEST_RINKEBY_BLOCK_TO_CHECK,
     omenTCRListId: 1,
@@ -175,6 +179,7 @@ const networks: { [K in NetworkId]: Network } = {
     graphWsUri: GRAPH_SOKOL_WS,
     klerosCurateGraphHttpUri: KLEROS_CURATE_GRAPH_RINKEBY_HTTP,
     klerosCurateGraphWsUri: KLEROS_CURATE_GRAPH_RINKEBY_WS,
+    ideaMarketGraphHttpUri: IDEAMARKET_GRAPH_MAINNET_HTTP,
     realitioTimeout: 180,
     earliestBlockToCheck: EARLIEST_RINKEBY_BLOCK_TO_CHECK,
     omenTCRListId: 0,
@@ -212,6 +217,7 @@ const networks: { [K in NetworkId]: Network } = {
     graphWsUri: GRAPH_XDAI_WS,
     klerosCurateGraphHttpUri: KLEROS_CURATE_GRAPH_RINKEBY_HTTP,
     klerosCurateGraphWsUri: KLEROS_CURATE_GRAPH_RINKEBY_WS,
+    ideaMarketGraphHttpUri: IDEAMARKET_GRAPH_MAINNET_HTTP,
     realitioTimeout: 86400,
     earliestBlockToCheck: EARLIEST_RINKEBY_BLOCK_TO_CHECK,
     omenTCRListId: 2,
@@ -695,6 +701,15 @@ export const getKlerosCurateGraphUris = (networkId: number): { httpUri: string; 
   const httpUri = networks[networkId].klerosCurateGraphHttpUri
   const wsUri = networks[networkId].klerosCurateGraphWsUri
   return { httpUri, wsUri }
+}
+
+export const getIdeaMarketGraphUri = (networkId: number): { httpUri: string } => {
+  if (!validNetworkId(networkId)) {
+    throw new Error(`Unsupported network id: '${networkId}'`)
+  }
+
+  const httpUri = networks[networkId].ideaMarketGraphHttpUri
+  return { httpUri }
 }
 
 export const getOutcomes = (networkId: number, templateId: number) => {

@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/react-hooks'
 import { BigNumber } from 'ethers/utils'
 import React, { ChangeEvent, useEffect, useState } from 'react'
+import { useLocation } from 'react-router'
 
 import { IMPORT_QUESTION_ID_KEY, MARKET_FEE } from '../../../../common/constants'
 import { useConnectedWeb3Context } from '../../../../hooks/connectedWeb3'
@@ -41,11 +42,14 @@ export const MarketWizardCreator = (props: Props) => {
     return questionId.match(reQuestionId) ? questionId : null
   }
 
+  const location = useLocation()
+  const { category, ideaAccount1, ideaAccount2, selectedDate } = (location.state as any) || {}
+
   const marketDataDefault: MarketData = {
     arbitrator: defaultArbitrator,
     arbitratorsCustom: [],
     categoriesCustom: [],
-    category: '',
+    category: category || 'twitter',
     collateral: defaultCollateral,
     userInputCollateral: defaultCollateral,
     compoundInterestRate: '',
@@ -54,16 +58,16 @@ export const MarketWizardCreator = (props: Props) => {
     useCompoundReserve: false,
     outcomes: [
       {
-        name: '',
+        name: ideaAccount1 || '',
         probability: 50,
       },
       {
-        name: '',
+        name: ideaAccount2 || '',
         probability: 50,
       },
     ],
-    question: '',
-    resolution: null,
+    question: ideaAccount1 && ideaAccount2 ? `${ideaAccount1} will outrank ${ideaAccount2}` : '',
+    resolution: selectedDate,
     spread: MARKET_FEE,
     lowerBound: null,
     upperBound: null,
@@ -104,28 +108,29 @@ export const MarketWizardCreator = (props: Props) => {
     // eslint-disable-next-line
   }, [networkId])
 
-  const { data: topCategories } = useQuery<GraphResponseTopCategories>(queryTopCategories, {
-    notifyOnNetworkStatusChange: true,
-    variables: { first },
-  })
+  // const { data: topCategories } = useQuery<GraphResponseTopCategories>(queryTopCategories, {
+  //   notifyOnNetworkStatusChange: true,
+  //   variables: { first },
+  // })
 
   useEffect(() => {
-    if (topCategories) {
-      const categoriesCustom: string[] = topCategories.categories.map(category => category.id)
+    // if (topCategories) {
+    // const categoriesCustom: string[] = topCategories.categories.map(category => category.id)
+    const categoriesCustom: string[] = ['twitter', 'substack']
 
-      const newMarketData = {
-        ...marketData,
-        categoriesCustom,
-      }
-
-      setMarketdata(newMarketData)
-
-      setLoadMoreButton(first <= categoriesCustom.length)
+    const newMarketData = {
+      ...marketData,
+      categoriesCustom,
     }
+
+    setMarketdata(newMarketData)
+
+    setLoadMoreButton(first <= categoriesCustom.length)
+    // }
     /* NOTE: The linter want us to add marketData to the dependency array, but it
     creates a sort of infinite loop, so I'm not gonna do it for now */
     // eslint-disable-next-line
-  }, [topCategories])
+  }, [])
 
   const [currentFormState, setCurrentFormState] = useState('')
 

@@ -8,7 +8,7 @@ import { useLocation } from 'react-router-dom'
 
 import { MAX_MARKET_FEE } from '../../../../common/constants'
 import { useConnectedCPKContext, useConnectedWeb3Context } from '../../../../hooks'
-import { useMarkets } from '../../../../hooks/useMarkets'
+import { useIdeaAccounts, useMarkets } from '../../../../hooks/useMarkets'
 import { queryCategories } from '../../../../queries/markets_home'
 import { getLogger } from '../../../../util/logger'
 import { getArbitratorsByNetwork, getOutcomes } from '../../../../util/networks'
@@ -216,6 +216,8 @@ const MarketHomeContainer: React.FC = () => {
 
   useInterval(() => setNow(calcNow), 1000 * 60 * 5)
 
+  const { accounts: ideaAccounts } = useIdeaAccounts('twitter')
+
   useEffect(() => {
     const getCpkAddress = async () => {
       try {
@@ -367,6 +369,7 @@ const MarketHomeContainer: React.FC = () => {
         count={fetchedMarkets ? fetchedMarkets.fixedProductMarketMakers.length : 0}
         currentFilter={filter}
         fetchMyMarkets={fetchMyMarkets}
+        ideaAccounts={ideaAccounts.names}
         isFiltering={isFiltering}
         markets={markets}
         moreMarkets={moreMarkets}
