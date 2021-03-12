@@ -41,7 +41,9 @@ export const MainScroll: React.FC = props => {
 
   return (
     <MainScrollStyled {...restProps}>
-      <MainScrollInner>{children}</MainScrollInner>
+      <div style={{ background: '#f6f6f6', width: '100%' }}>
+        <MainScrollInner>{children}</MainScrollInner>
+      </div>
     </MainScrollStyled>
   )
 }
