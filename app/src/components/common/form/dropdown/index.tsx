@@ -389,9 +389,7 @@ export const Dropdown: React.FC<Props> = props => {
   }, [isOpen])
 
   useEffect(() => {
-    console.log(currentItem)
     if (currentItem > -1 && !isDirty) {
-      console.log('set to true')
       setIsDirty(true)
     }
   }, [currentItem])
