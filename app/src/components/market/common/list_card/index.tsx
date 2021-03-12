@@ -8,6 +8,7 @@ const CardStyled = styled(Card)`
   max-width: 100%;
   width: 920px;
   // min-height: 530px;
+  background-color: #f6f6f6;
   min-width: ${props => props.theme.mainContainer.maxWidth};
 `
 

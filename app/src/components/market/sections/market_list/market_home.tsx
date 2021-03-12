@@ -253,8 +253,12 @@ const Grid3AutoColumns = styled.div`
   grid-auto-flow: row;
   column-gap: 10px;
   row-gap: 25px;
+  & > a {
+    background-color: #fff;
+    border-radius: 10px;
+  }
   & > a:nth-child(-n + 3) {
-    border: 1px solid green;
+    border: 1px solid #0857e0;
   }
 `
 
@@ -741,7 +745,7 @@ export const MarketHome: React.FC<Props> = (props: Props) => {
           {noMarketsAvailable && <NoMarketsAvailable>No markets available.</NoMarketsAvailable>}
           {showFilteringInlineLoading && <InlineLoading message="Loading Markets..." />}
         </ListWrapper>
-        <BottomContents>
+        {/* <BottomContents>
           <DisplayButtonWrapper>
             <DisplayDropdown
               currentItem={0}
@@ -759,7 +763,7 @@ export const MarketHome: React.FC<Props> = (props: Props) => {
               Next
             </ButtonRoundStyled>
           </LoadMoreWrapper>
-        </BottomContents>
+        </BottomContents> */}
       </ListCard>
     </MarketHomeWrapper>
   )
