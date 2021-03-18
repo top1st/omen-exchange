@@ -5,6 +5,11 @@ import { version as appVersion } from '../../../../../package.json'
 import { DISCLAIMER_TEXT, DOCUMENT_FAQ, DOCUMENT_VALIDITY_RULES, SHOW_FOOTER } from '../../../../common/constants'
 import { useConnectedWeb3Context, useContracts } from '../../../../hooks'
 
+import discord from './discord.svg'
+import medium from './medium-m.svg'
+import telegram from './telegram-plane.svg'
+import twitter from './twitter-square.svg'
+
 const Wrapper = styled.div<{ paddingBottomSmall?: boolean }>`
   align-items: center;
   color: ${props => props.theme.colors.textColorDarker};
@@ -18,6 +23,23 @@ const Wrapper = styled.div<{ paddingBottomSmall?: boolean }>`
   padding-top: 10px;
   width: 100%;
   position: relative;
+`
+
+const FooterInner = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 100%;
+  padding: 0 10px;
+  position: relative;
+  width: ${props => props.theme.mainContainer.maxWidth};
+
+  @media (min-width: ${props => props.theme.themeBreakPoints.md}) {
+    padding: 0 ${props => props.theme.paddings.mainPadding};
+  }
 `
 
 const Link = styled.a`
@@ -46,35 +68,62 @@ export const Footer = () => {
   return SHOW_FOOTER ? (
     <>
       <Wrapper paddingBottomSmall={DISCLAIMER_TEXT ? true : false}>
-        <Link href="https://github.com/protofire/gnosis-conditional-exchange">Version {appVersion}</Link>
-        <Break>·</Break>
-        <Link href={`https://etherscan.io/address/${marketMakerFactory.address}`}>Omen Contract</Link>
-        <Break>·</Break>
-        <Link href="https://explore.duneanalytics.com/dashboard/omen-stats" rel="noopener noreferrer" target="_blank">
-          Statistics
-        </Link>
-        <Break>·</Break>
-        <Link href="http://alchemy.daostack.io/dao/0x519b70055af55a007110b4ff99b0ea33071c720a">Propose Token</Link>
-        <Break>·</Break>
-        <Link href={DOCUMENT_FAQ} rel="noopener noreferrer" target="_blank">
-          FAQ
-        </Link>
-        <Break>·</Break>
-        <Link href={DOCUMENT_VALIDITY_RULES} rel="noopener noreferrer" target="_blank">
-          Market Rules
-        </Link>
-        <Break>·</Break>
-        <Link href="https://dxdao.eth.link" rel="noopener noreferrer" target="_blank">
-          DXdao.eth
-        </Link>
-        <Break>·</Break>
-        <Link href="https://twitter.com/Omen_eth" rel="noopener noreferrer" target="_blank">
-          Twitter
-        </Link>
-        <Break>·</Break>
-        <Link href="https://t.me/omen_eth" rel="noopener noreferrer" target="_blank">
-          Telegram
-        </Link>
+        <FooterInner>
+          <div style={{ display: 'flex' }}>
+            <div style={{ flex: 1 }}>
+              <div>
+                <span style={{ color: '#011134', fontWeight: 'bold', fontSize: '1.1rem', marginRight: '10px' }}>
+                  Mouth.is
+                </span>
+              </div>
+              <div style={{ marginTop: '16px' }}>
+                <span style={{ color: '#323b87', fontWeight: 'bold', fontSize: '0.9rem', marginRight: '18px' }}>
+                  How it Works
+                </span>
+                <span style={{ color: '#323b87', fontWeight: 'bold', fontSize: '0.9rem', marginRight: '18px' }}>
+                  MFAQ
+                </span>
+                <span style={{ color: '#323b87', fontWeight: 'bold', fontSize: '0.9rem', marginRight: '18px' }}>
+                  Blog
+                </span>
+              </div>
+              <div style={{ marginTop: '16px' }}>
+                <span style={{ color: '#323b87', fontWeight: 'bold', fontSize: '0.9rem', marginRight: '18px' }}>
+                  ContactUs
+                </span>
+                <span style={{ color: '#323b87', fontWeight: 'bold', fontSize: '0.9rem', marginRight: '18px' }}>
+                  Privacy Policy
+                </span>
+                <span style={{ color: '#323b87', fontWeight: 'bold', fontSize: '0.9rem', marginRight: '18px' }}>
+                  How It Works
+                </span>
+              </div>
+              <div style={{ marginTop: '16px' }}>
+                <span style={{ fontSize: '0.9rem', color: 'grey' }}>
+                  Built on <span style={{ color: 'blue' }}>Etherium</span>
+                </span>
+              </div>
+              <div style={{ marginTop: '16px' }}>
+                <span style={{ fontSize: '0.8rem', color: 'grey' }}>2021 ideaMarkets</span>
+                <img alt="twitter" src={twitter} style={{ margin: '0 5px 0 10px' }} width="20px" />
+                <img alt="telegram" src={telegram} style={{ margin: '0 5px' }} width="20px" />
+                <img alt="discord" src={discord} style={{ margin: '0 5px' }} width="20px" />
+                <img alt="medium" src={medium} style={{ margin: '0 5px' }} width="20px" />
+              </div>
+            </div>
+            <div style={{ flex: 1, margin: 'auto' }}>
+              <div style={{ color: '#011134', fontWeight: 'bold', fontSize: '1.1rem', marginBottom: '10px' }}>
+                Disclaimer
+              </div>
+              <div style={{ lineHeight: '20px' }}>
+                animi rerum ad distinctio maxime. Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat
+                voluptas possimus odio temporibus debitis perspiciatis eveniet optio sint maxime. Atque corrupti nisi
+                maiores laboriosam, optio omnis quas laudantium similique quisquam.
+              </div>
+            </div>
+            <div></div>
+          </div>
+        </FooterInner>
       </Wrapper>
     </>
   ) : null

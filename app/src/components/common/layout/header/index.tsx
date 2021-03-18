@@ -44,12 +44,12 @@ const HeaderInner = styled.div`
   display: flex;
   flex-direction: row;
   height: 100%;
-  justify-content: space-between;
+  justify-content: center;
   margin: 0 auto;
   max-width: 100%;
   padding: 0 10px;
   position: relative;
-  width: ${props => props.theme.themeBreakPoints.xxl};
+  width: ${props => props.theme.mainContainer.maxWidth};
 
   @media (min-width: ${props => props.theme.themeBreakPoints.md}) {
     padding: 0 ${props => props.theme.paddings.mainPadding};
@@ -63,6 +63,10 @@ const LogoWrapper = styled(NavLink)`
 
 const ButtonCreateDesktop = styled(ButtonRound)`
   display: none;
+  border-radius: inherit;
+  border: none;
+  border-bottom: #032066 solid;
+  font-weight: bold;
 
   @media (min-width: ${props => props.theme.themeBreakPoints.md}) {
     display: flex;
@@ -140,10 +144,10 @@ const ContentsRight = styled.div`
   align-items: center;
   display: flex;
   flex-wrap: wrap;
-  margin: auto 0 auto auto;
+  margin: auto auto 0 0;
 
   @media (min-width: ${props => props.theme.themeBreakPoints.md}) {
-    margin: auto 0 0 auto;
+    margin: auto auto 0 0;
     flex-wrap: unset;
   }
 `

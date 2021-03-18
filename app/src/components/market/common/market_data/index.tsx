@@ -14,8 +14,10 @@ import { TextToggle } from '../TextToggle'
 const MarketDataWrapper = styled.div`
   display: flex;
   align-items: center;
-  width: 100%;
+  // width: 80%;
   margin-bottom: 24px;
+  background-color: 'blue';
+  justify-content: end;
 
   & > * + * {
     margin-left: 38px;
@@ -32,16 +34,25 @@ const MarketDataWrapper = styled.div`
 `
 
 const MarketDataItem = styled.div`
-  display: flex;
+  background-color: ${props => props.theme.cards.backgroundColor};
+  border-radius: ${props => props.theme.cards.borderRadius};
+  border: ${props => props.theme.cards.border};
+  box-shadow: ${props => props.theme.cards.boxShadow};
+  display: inline-block;
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
-  height: 39px;
+  height: auto;
+  padding: 2px 10px 2px 10px;
+  min-width: 100px;
+  width: auto;
+  block-size: fit-content;
+  white-space: nowrap;
 
   @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
     width: 100%;
     flex-direction: row-reverse;
-    height: 16px;
+    height: auto;
   }
 `
 
@@ -50,6 +61,7 @@ const MarketDataItemTop = styled.div`
   font-size: 14px;
   font-weight: 500;
   line-height: 16px;
+
 `
 
 const MarketDataItemBottom = styled.div`
@@ -139,49 +151,52 @@ export const MarketData: React.FC<Props> = props => {
   return (
     <MarketDataWrapper>
       <MarketDataItem>
+        <TextToggle
+          alternativeLabel={`Markets ends on - ${timezoneAbbr}`}
+          isMain={showUTC}
+          mainLabel="Markets ends on - UTC"
+          onClick={() => setShowUTC(value => !value)}
+        />
         <MarketDataItemTop>
-          {formatToShortNumber(displayLiquidity)} {symbol}
+          {showUTC
+            ? formatDate(resolutionTimestamp, false)
+            : moment(resolutionTimestamp).format('YYYY-MM-DD - H:mm zz')}{' '}
         </MarketDataItemTop>
-        <MarketDataItemBottom>Liquidity</MarketDataItemBottom>
       </MarketDataItem>
+
       <MarketDataItem>
-        <MarketDataItemTop>
-          <MarketDataItemImage src={currencyIcon && currencyIcon}></MarketDataItemImage>
-          {show24H ? formatToShortNumber(displayDailyVolume) : formatToShortNumber(displayTotalVolume)}
-          &nbsp;{symbol}
-        </MarketDataItemTop>
         <TextToggle
           alternativeLabel="24h Volume"
           isMain={!show24H}
           mainLabel="Total Volume"
           onClick={() => setShow24H(value => !value)}
         />
-      </MarketDataItem>
-      <MarketDataItem>
         <MarketDataItemTop>
-          {showUTC
-            ? formatDate(resolutionTimestamp, false)
-            : moment(resolutionTimestamp).format('YYYY-MM-DD - H:mm zz')}{' '}
+          <MarketDataItemImage src={currencyIcon && currencyIcon}></MarketDataItemImage>
+          {show24H ? formatToShortNumber(displayDailyVolume) : formatToShortNumber(displayTotalVolume)}
+          &nbsp;{symbol}
         </MarketDataItemTop>
-        <TextToggle
-          alternativeLabel={`Closing Date - ${timezoneAbbr}`}
-          isMain={showUTC}
-          mainLabel="Closing Date - UTC"
-          onClick={() => setShowUTC(value => !value)}
-        />
       </MarketDataItem>
+
+      <MarketDataItem>
+        <MarketDataItemBottom>Liquidity</MarketDataItemBottom>
+        <MarketDataItemTop>
+          {formatToShortNumber(displayLiquidity)} {symbol}
+        </MarketDataItemTop>
+      </MarketDataItem>
+
       {isFinalize && answerFinalizedTimestamp && (
         <MarketDataItem>
           <MarketDataItemTop>In {moment(answerFinalizedTimestamp.toNumber() * 1000).fromNow(true)}</MarketDataItemTop>
           <MarketDataItemBottom>Finalized</MarketDataItemBottom>
         </MarketDataItem>
       )}
-      {!isFinalize && resolutionTimestamp > new Date() && (
-        <MarketDataItem>
-          <MarketDataItemTop>{moment(resolutionTimestamp).fromNow(true)}</MarketDataItemTop>
-          <MarketDataItemBottom>Remaining</MarketDataItemBottom>
-        </MarketDataItem>
-      )}
+      {/*{!isFinalize && resolutionTimestamp > new Date() && (*/}
+      {/*  <MarketDataItem>*/}
+      {/*    <MarketDataItemTop>{moment(resolutionTimestamp).fromNow(true)}</MarketDataItemTop>*/}
+      {/*    <MarketDataItemBottom>Remaining</MarketDataItemBottom>*/}
+      {/*  </MarketDataItem>*/}
+      {/*)}*/}
     </MarketDataWrapper>
   )
 }

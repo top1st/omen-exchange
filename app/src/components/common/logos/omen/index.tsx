@@ -20,7 +20,13 @@ const Wrapper = styled.svg`
 `
 
 export const OmenLogo = () => {
-  return <img alt="logo" height="30px" src={logo} />
+  return (
+    <div style={{ width: '200px' }}>
+      <span style={{ color: '#011134', fontWeight: 'bold', fontSize: '1.1rem', marginRight: '10px' }}>Mouth.is</span>
+      <img alt="logo" height="30px" src={logo} />
+      <span style={{ color: '#011134', fontWeight: 'bold', marginLeft: '10px' }}>by Ideamarket</span>
+    </div>
+  )
   // <Wrapper fill="none" height="28" viewBox="0 0 83 28" width="83" xmlns="http://www.w3.org/2000/svg">
   //   <path
   //     className="logo"

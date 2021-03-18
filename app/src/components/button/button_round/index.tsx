@@ -17,8 +17,6 @@ const ActiveCSS = css`
 const Wrapper = styled.button<{ active?: boolean }>`
   align-items: center;
   background-color: ${({ theme }) => theme.colors.mainBodyBackground};
-  border-radius: ${({ theme }) => theme.buttonRound.borderRadius};
-  border: 1px solid ${props => props.theme.colors.tertiary};
   cursor: pointer;
   display: flex;
   flex-shrink: 0;
@@ -31,6 +29,7 @@ const Wrapper = styled.button<{ active?: boolean }>`
   color: ${({ theme }) => theme.colors.textColorDark};
   transition: border-color 0.15s linear;
   user-select: none;
+  border: none;
 
   &:hover {
     border-color: ${props => props.theme.colors.tertiaryDark};

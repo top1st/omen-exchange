@@ -28,7 +28,7 @@ const ChartWrapper = styled.div`
 
 const TitleWrapper = styled.div`
   align-items: center;
-  border-bottom: 1px solid ${props => props.theme.borders.borderDisabled};
+  // border-bottom: 1px solid ${props => props.theme.borders.borderDisabled};
   display: flex;
   margin: 0;
   padding: 20px 24px;
@@ -268,53 +268,76 @@ export const History_select: React.FC<Props> = ({
   return (
     <ChartWrapper>
       <TitleWrapper>
-        <SelectWrapper>
-          <ButtonSelect active={toggleSelect} onClick={() => setToggleSelect(true)}>
-            Activities
-          </ButtonSelect>
-          <ButtonSelect active={!toggleSelect} onClick={() => setToggleSelect(false)}>
-            Graph
-          </ButtonSelect>
-        </SelectWrapper>
+        {/*<SelectWrapper>*/}
+        {/*  <ButtonSelect active={toggleSelect} onClick={() => setToggleSelect(true)}>*/}
+        {/*    Activities*/}
+        {/*  </ButtonSelect>*/}
+        {/*  <ButtonSelect active={!toggleSelect} onClick={() => setToggleSelect(false)}>*/}
+        {/*    Graph*/}
+        {/*  </ButtonSelect>*/}
+        {/*</SelectWrapper>*/}
 
-        {toggleSelect ? (
-          <DropdownMenu currentItem={type} dropdownPosition={DropdownPosition.right} items={DropdownItems} />
-        ) : (
-          <ButtonsWrapper>
-            {options.map((item, index) => {
-              return (
-                <ButtonSelectableStyled active={value === item} key={index} onClick={() => onChange(item)}>
-                  {item}
-                </ButtonSelectableStyled>
-              )
-            })}
-          </ButtonsWrapper>
-        )}
+        {/*{toggleSelect ? (*/}
+        {/*  <DropdownMenu currentItem={type} dropdownPosition={DropdownPosition.right} items={DropdownItems} />*/}
+        {/*) : (*/}
+        {/*  <ButtonsWrapper>*/}
+        {/*    {options.map((item, index) => {*/}
+        {/*      return (*/}
+        {/*        <ButtonSelectableStyled active={value === item} key={index} onClick={() => onChange(item)}>*/}
+        {/*          {item}*/}
+        {/*        </ButtonSelectableStyled>*/}
+        {/*      )*/}
+        {/*    })}*/}
+        {/*  </ButtonsWrapper>*/}
+        {/*)}*/}
+
+        <ButtonsWrapper>
+          {options.map((item, index) => {
+            return (
+              <ButtonSelectableStyled active={value === item} key={index} onClick={() => onChange(item)}>
+                {item}
+              </ButtonSelectableStyled>
+            )
+          })}
+        </ButtonsWrapper>
       </TitleWrapper>
-      {toggleSelect ? (
-        <HistoryTable
-          currency={currency}
-          fpmmTrade={sharesData}
-          next={!paginationNext}
-          onLoadNextPage={loadNextPage}
-          onLoadPrevPage={loadPrevPage}
-          prev={pageIndex < 1}
-          sharesDataLoader={sharesDataLoader}
-          status={status}
-        />
-      ) : (
-        <HistoryChart
-          data={data}
-          isScalar={isScalar}
-          notEnoughData={notEnoughData}
-          outcomes={outcomeArray}
-          scalarHigh={scalarHigh}
-          scalarLow={scalarLow}
-          sharesDataLoader={sharesDataLoader}
-          status={status}
-          unit={unit}
-        />
-      )}
+
+      <HistoryChart
+        data={data}
+        isScalar={isScalar}
+        notEnoughData={notEnoughData}
+        outcomes={outcomeArray}
+        scalarHigh={scalarHigh}
+        scalarLow={scalarLow}
+        sharesDataLoader={sharesDataLoader}
+        status={status}
+        unit={unit}
+      />
+
+      {/*{toggleSelect ? (*/}
+      {/*  <HistoryTable*/}
+      {/*    currency={currency}*/}
+      {/*    fpmmTrade={sharesData}*/}
+      {/*    next={!paginationNext}*/}
+      {/*    onLoadNextPage={loadNextPage}*/}
+      {/*    onLoadPrevPage={loadPrevPage}*/}
+      {/*    prev={pageIndex < 1}*/}
+      {/*    sharesDataLoader={sharesDataLoader}*/}
+      {/*    status={status}*/}
+      {/*  />*/}
+      {/*) : (*/}
+      {/*  <HistoryChart*/}
+      {/*    data={data}*/}
+      {/*    isScalar={isScalar}*/}
+      {/*    notEnoughData={notEnoughData}*/}
+      {/*    outcomes={outcomeArray}*/}
+      {/*    scalarHigh={scalarHigh}*/}
+      {/*    scalarLow={scalarLow}*/}
+      {/*    sharesDataLoader={sharesDataLoader}*/}
+      {/*    status={status}*/}
+      {/*    unit={unit}*/}
+      {/*  />*/}
+      {/*)}*/}
     </ChartWrapper>
   )
 }

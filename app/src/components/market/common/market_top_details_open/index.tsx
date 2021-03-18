@@ -66,6 +66,8 @@ const MarketTopDetailsOpen: React.FC<Props> = (props: Props) => {
     submissionIDs,
   } = marketMakerData
 
+  console.log('MarketTopDetailsOpen:', marketMakerData)
+
   const ovmAddress = getContractAddress(context.networkId, 'omenVerifiedMarkets')
   const creationDate = new Date(1000 * parseInt(creationTimestamp))
 

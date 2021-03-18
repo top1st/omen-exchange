@@ -182,7 +182,7 @@ const theme = {
     placeholderFontWeight: '400',
   },
   mainContainer: {
-    maxWidth: '586px',
+    maxWidth: '80%',
   },
   moreMenu: {
     buttonBorder: '#DCDFF2',

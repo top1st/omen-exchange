@@ -5,8 +5,6 @@ export const DatepickerStylesOverride = css`
     &.react-datepicker {
       background-color: #fff;
       border-radius: 16px;
-      border: ${({ theme }) => theme.borders.borderLineDisabled};
-      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
       color: ${props => props.theme.colors.textColorDark};
       display: inline-block;
       font-family: ${props => props.theme.fonts.fontFamily};

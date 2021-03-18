@@ -89,7 +89,7 @@ export const OutcomeItemTextWrapper = styled.div`
   display: flex;
 `
 export const commonWrapperCSS = css`
-  border-top: 1px solid ${props => props.theme.borders.borderDisabled};
+  // border-top: 1px solid ${props => props.theme.borders.borderDisabled};
   margin-left: -${props => props.theme.cards.paddingHorizontal};
   margin-right: -${props => props.theme.cards.paddingHorizontal};
   width: auto;

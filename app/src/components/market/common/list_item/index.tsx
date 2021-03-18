@@ -23,7 +23,7 @@ import { IconStar } from '../../../common/icons/IconStar'
 import { IdeaAccount } from './idea_account'
 
 const Wrapper = styled(NavLink)`
-  border-bottom: 1px solid ${props => props.theme.borders.borderColor};
+  border: 2px solid #eae5e5;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -35,10 +35,6 @@ const Wrapper = styled(NavLink)`
   &:active,
   &:hover {
     background-color: ${props => props.theme.colors.activeListItemBackground};
-  }
-
-  &:last-child {
-    border-bottom: none;
   }
 `
 
@@ -84,9 +80,12 @@ const FeatureTitle = styled.div`
 `
 
 const FeatureSpan = styled.span`
-  background: green;
+  background: blue;
   border-radius: 3px;
-  padding: 1px;
+  padding: 1px 4px;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 500;
   border-bottom: none;
 `
 
@@ -110,6 +109,7 @@ export const ListItem: React.FC<Props> = (props: Props) => {
 
   const { count, currentFilter, market } = props
   const { category } = market
+
   const {
     address,
     collateralToken,
@@ -127,6 +127,8 @@ export const ListItem: React.FC<Props> = (props: Props) => {
     scaledLiquidityParameter,
     title,
   } = market
+
+  console.log('market', market)
 
   let token: Token | undefined
   try {
@@ -187,48 +189,63 @@ export const ListItem: React.FC<Props> = (props: Props) => {
 
   return (
     <Wrapper to={`/${address}`}>
-      {count <= 3 && (
+      {count < 3 && (
         <FeatureTitle>
-          <FeatureSpan>Featured</FeatureSpan> {resolutionDate}
+          <FeatureSpan>Featured</FeatureSpan>
         </FeatureTitle>
       )}
       {/* <Title>{isScalar ? scalarTitle : title}</Title> */}
       <AccountsWrapper>
         <IdeaAccount category={category} name={first} price={outcomeTokenMarginalPrices[0]} />
-        <div style={{ width: '50px', textAlign: 'center' }}>vs</div>
+        <div
+          style={{
+            width: '50px',
+            textAlign: 'center',
+            color: 'grey',
+            fontWeight: 500,
+            fontSize: '0.8rem',
+            marginTop: '5px',
+          }}
+        >
+          vs
+        </div>
         <IdeaAccount category={category} name={second} price={outcomeTokenMarginalPrices[1]} />
       </AccountsWrapper>
 
-      <div style={{ textAlign: 'center' }}>Volume</div>
-      <div style={{ textAlign: 'center' }}>{`${formatToShortNumber(volume || '')} ${symbol}`}</div>
+      <div style={{ textAlign: 'center', color: 'grey', fontWeight: 500, fontSize: '0.8rem', marginTop: '5px' }}>
+        Volume
+      </div>
+      <div style={{ textAlign: 'center', fontWeight: 'bold', color: 'black' }}>
+        {`${formatToShortNumber(volume || '')} ${symbol}`}
+      </div>
 
-      {/* <Info>
-        <IconStar></IconStar>
-        <Outcome>
-          {isScalar
-            ? `${currentPrediction && formatNumber(currentPrediction.toString())} ${unit}`
-            : outcomes && `${outcomes[indexMax]} (${(percentages[indexMax] * 100).toFixed(2)}%)`}
-        </Outcome>
-        <Separator>|</Separator>
-        <span>{moment(endDate).isAfter(now) ? `${endsText} remaining` : `Closed ${endsText} ago`}</span>
-        <Separator>|</Separator>
-        <span>
-          {currentFilter.sortBy === 'usdVolume' && `${formatToShortNumber(volume || '')} ${symbol} - Volume`}
-          {currentFilter.sortBy === 'openingTimestamp' &&
-            `${resolutionDate} - ${moment(endDate).isAfter(now) ? 'Closing' : 'Closed'}`}
-          {currentFilter.sortBy === `sort24HourVolume${Math.floor(Date.now() / (1000 * 60 * 60)) % 24}` &&
-            `${
-              Math.floor(Date.now() / 86400000) === lastActiveDay && runningDailyVolumeByHour && decimals
-                ? formatToShortNumber(
-                    formatBigNumber(runningDailyVolumeByHour[Math.floor(Date.now() / (1000 * 60 * 60)) % 24], decimals),
-                  )
-                : 0
-            } ${symbol} - 24h Volume`}
-          {currentFilter.sortBy === 'usdLiquidityParameter' &&
-            `${formatToShortNumber(formattedLiquidity)} ${symbol} - Liquidity`}
-          {currentFilter.sortBy === 'creationTimestamp' && `${formattedCreationDate} - Created`}
-        </span>
-      </Info> */}
+      {/*<Info>*/}
+      {/*  <IconStar></IconStar>*/}
+      {/*  <Outcome>*/}
+      {/*    {isScalar*/}
+      {/*      ? `${currentPrediction && formatNumber(currentPrediction.toString())} ${unit}`*/}
+      {/*      : outcomes && `${outcomes[indexMax]} (${(percentages[indexMax] * 100).toFixed(2)}%)`}*/}
+      {/*  </Outcome>*/}
+      {/*  <Separator>|</Separator>*/}
+      {/*  <span>{moment(endDate).isAfter(now) ? `${endsText} remaining` : `Closed ${endsText} ago`}</span>*/}
+      {/*  <Separator>|</Separator>*/}
+      {/*  <span>*/}
+      {/*    {currentFilter.sortBy === 'usdVolume' && `${formatToShortNumber(volume || '')} ${symbol} - Volume`}*/}
+      {/*    {currentFilter.sortBy === 'openingTimestamp' &&*/}
+      {/*      `${resolutionDate} - ${moment(endDate).isAfter(now) ? 'Closing' : 'Closed'}`}*/}
+      {/*    {currentFilter.sortBy === `sort24HourVolume${Math.floor(Date.now() / (1000 * 60 * 60)) % 24}` &&*/}
+      {/*      `${*/}
+      {/*        Math.floor(Date.now() / 86400000) === lastActiveDay && runningDailyVolumeByHour && decimals*/}
+      {/*          ? formatToShortNumber(*/}
+      {/*              formatBigNumber(runningDailyVolumeByHour[Math.floor(Date.now() / (1000 * 60 * 60)) % 24], decimals),*/}
+      {/*            )*/}
+      {/*          : 0*/}
+      {/*      } ${symbol} - 24h Volume`}*/}
+      {/*    {currentFilter.sortBy === 'usdLiquidityParameter' &&*/}
+      {/*      `${formatToShortNumber(formattedLiquidity)} ${symbol} - Liquidity`}*/}
+      {/*    {currentFilter.sortBy === 'creationTimestamp' && `${formattedCreationDate} - Created`}*/}
+      {/*  </span>*/}
+      {/*</Info>*/}
     </Wrapper>
   )
 }

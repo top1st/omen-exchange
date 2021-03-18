@@ -1,6 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useHistory } from 'react-router'
 import styled from 'styled-components'
+import twitter from './twitter-square.svg'
+import telegram from './telegram-plane.svg'
+import discord from './discord.svg'
+import medium from './medium-m.svg'
 
 import { ConnectedWeb3Context } from '../../../../hooks/connectedWeb3'
 import { getLogger } from '../../../../util/logger'
@@ -210,6 +214,11 @@ const BottomContents = styled.div`
 
 const ButtonCreateDesktop = styled(ButtonRound)`
   display: none;
+  background-color: blue;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  padding: 5px 40px;
 
   @media (min-width: ${props => props.theme.themeBreakPoints.md}) {
     display: flex;
@@ -258,7 +267,7 @@ const Grid3AutoColumns = styled.div`
     border-radius: 10px;
   }
   & > a:nth-child(-n + 3) {
-    border: 1px solid #0857e0;
+    border: 2px solid #0857e0;
   }
 `
 
@@ -627,7 +636,7 @@ export const MarketHome: React.FC<Props> = (props: Props) => {
   return (
     <MarketHomeWrapper>
       <CreateWrapper>
-        <h3>Go head-to-head against your critics</h3>
+        <h1>Go head-to-head against your critics</h1>
         <Actions>
           {/* <MarketsTypeDropdown
           currentItem={marketTypes.findIndex(i => i.type === templateId)}
@@ -637,24 +646,10 @@ export const MarketHome: React.FC<Props> = (props: Props) => {
           items={marketTypeItems}
         /> */}
           <div style={{ display: 'flex', alignItems: 'center' }}>Market </div>
-          <div style={{ width: '150px', position: 'relative' }}>
-            <MarketsDropdown
-              currentItem={['twitter', 'substack'].findIndex(ct => ct === category)}
-              dirty={true}
-              dropdownDirection={DropdownDirection.downwards}
-              dropdownVariant={DropdownVariant.card}
-              items={categoryItems}
-            />
-          </div>
-          <div style={{ width: '150px', position: 'relative' }}>
-            <MarketsFilterDropdown
-              currentItem={filters.findIndex(i => i.state === state)}
-              dirty={true}
-              dropdownDirection={DropdownDirection.downwards}
-              dropdownVariant={DropdownVariant.card}
-              items={filterItems}
-            />
-          </div>
+          <img alt="twitter" src={twitter} style={{ margin: '0 5px 0 10px' }} width="30px" />
+          <img alt="telegram" src={telegram} style={{ margin: '0 5px' }} width="30px" />
+          <img alt="discord" src={discord} style={{ margin: '0 5px' }} width="30px" />
+          <img alt="medium" src={medium} style={{ margin: '0 5px' }} width="30px" />
         </Actions>
         <Actions>
           <SortDropdown
@@ -681,7 +676,7 @@ export const MarketHome: React.FC<Props> = (props: Props) => {
           </div>
         </Actions>
         <Actions>
-          <ButtonCreateDesktop {...createButtonProps}>Create Market</ButtonCreateDesktop>
+          <ButtonCreateDesktop {...createButtonProps}>Create</ButtonCreateDesktop>
           <ButtonCreateMobile {...createButtonProps}>
             <IconAdd />
           </ButtonCreateMobile>
@@ -734,10 +729,8 @@ export const MarketHome: React.FC<Props> = (props: Props) => {
         <ListWrapper>
           {!isFiltering && RemoteData.hasData(markets) && RemoteData.is.success(markets) && markets.data.length > 0 && (
             <Grid3AutoColumns>
-              {markets.data.slice(0, count).map(item => {
-                return (
-                  <ListItem count={count} currentFilter={currentFilter} key={item.address} market={item}></ListItem>
-                )
+              {markets.data.slice(0, count).map((item, idx) => {
+                return <ListItem count={idx} currentFilter={currentFilter} key={item.address} market={item}></ListItem>
               })}
             </Grid3AutoColumns>
           )}

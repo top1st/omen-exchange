@@ -18,7 +18,7 @@ const Wrapper = styled.div`
   color: ${({ theme }) => theme.colors.clickable};
   .text-toggle-label {
     margin-left: 10px;
-    font-size: 14px;
+    font-size: 12px;
     line-height: 16px;
     font-weight: 400;
   }

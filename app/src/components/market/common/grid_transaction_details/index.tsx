@@ -9,9 +9,9 @@ const Grid = styled.div`
   margin-bottom: 24px;
   margin-top: 24px;
 
-  @media (min-width: ${props => props.theme.themeBreakPoints.md}) {
-    grid-template-columns: 1fr 1fr;
-  }
+  // @media (min-width: ${props => props.theme.themeBreakPoints.md}) {
+  //   grid-template-rows: 1fr 1fr;
+  // }
 `
 
 export const GridTransactionDetails: React.FC = props => {

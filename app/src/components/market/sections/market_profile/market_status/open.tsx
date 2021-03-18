@@ -1,6 +1,9 @@
 import { BigNumber } from 'ethers/utils'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps, useHistory, withRouter } from 'react-router-dom'
+// import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap'
+import { Tab, TabList, TabPanel, Tabs } from 'react-tabs'
+import { Nav, NavItem, NavLink } from 'reactstrap'
 import styled from 'styled-components'
 
 import { useCompoundService, useConnectedCPKContext, useGraphMarketUserTxData } from '../../../../../hooks'
@@ -18,6 +21,7 @@ import {
 } from '../../../../../util/types'
 import { Button, ButtonContainer } from '../../../../button'
 import { ButtonType } from '../../../../button/button_styling_types'
+import { Card } from '../../../../common'
 import { MarketScale } from '../../../common/market_scale'
 import { MarketTopDetailsOpen } from '../../../common/market_top_details_open'
 import { OutcomeTable } from '../../../common/outcome_table'
@@ -30,6 +34,12 @@ import { MarketNavigation } from '../../market_navigation'
 import { MarketPoolLiquidityContainer } from '../../market_pooling/market_pool_liquidity_container'
 import { MarketSellContainer } from '../../market_sell/market_sell_container'
 import { MarketVerifyContainer } from '../../market_verify/market_verify_container'
+import './tab.scss'
+import { IdeaAccount } from '../../../common/list_item/idea_account'
+
+import 'react-tabs/style/react-tabs.scss'
+
+import classnames from 'classnames'
 
 export const TopCard = styled(ViewCard)`
   padding: 24px;
@@ -45,6 +55,39 @@ const MessageWrapper = styled.div`
   margin-top: 20px;
   margin-bottom: 20px;
   padding: 20px 25px;
+`
+
+const MainContainer = styled.div`
+  max-width: 100%;
+  width: ${props => props.theme.mainContainer.maxWidth};
+  flex-direction: row;
+  justify-content: space-between;
+  display: flex;
+
+  @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
+    flex-direction: column;
+    margin-bottom: 20px;
+    & > * + * {
+      margin-top: 13px;
+      margin-left: 0;
+    }
+  }
+`
+
+const ChartWrapper = styled(Card)`
+  width: 58%;
+  padding: 0 5px 0 5px;
+
+  @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
+    width: 100%;
+  }
+`
+
+const BuySellWrapper = styled(Card)`
+  width: 40%;
+  @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
+    width: 100%;
+  }
 `
 
 const Title = styled.h2`
@@ -127,11 +170,18 @@ const Wrapper = (props: Props) => {
     scalarLow,
     totalPoolShares,
   } = marketMakerData
+
   const [displayCollateral, setDisplayCollateral] = useState<Token>(collateral)
   const { networkId } = context
   const isQuestionOpen = question.resolution.valueOf() < Date.now()
   const { compoundService: CompoundService } = useCompoundService(collateral, context)
   const compoundService = CompoundService || null
+
+  const [activeTab, setActiveTab] = useState('buy')
+
+  const toggle = (tab: string) => {
+    if (activeTab !== tab) setActiveTab(tab)
+  }
 
   const setCurrentDisplayCollateral = () => {
     // if collateral is a cToken then convert the collateral and balances to underlying token
@@ -311,69 +361,136 @@ const Wrapper = (props: Props) => {
 
   useEffect(() => {
     if ((isQuestionFinalized || !isFinalizing) && currentTab === MarketDetailsTab.finalize) {
-      setCurrentTab(MarketDetailsTab.swap)
+      setCurrentTab(MarketDetailsTab.buy)
     }
     // eslint-disable-next-line
   }, [isQuestionFinalized, isFinalizing])
 
+  const [tabIndex, setTabIndex] = useState(0)
+
   return (
     <>
-      <TopCard>
-        <MarketTopDetailsOpen marketMakerData={marketMakerData} />
-      </TopCard>
-      <BottomCard>
-        <MarketNavigation
-          activeTab={currentTab}
-          marketMakerData={marketMakerData}
-          switchMarketTab={switchMarketTab}
-        ></MarketNavigation>
-        {currentTab === MarketDetailsTab.swap && (
-          <>
-            {isScalar ? (
-              <>
-                <MarketScale
-                  balances={balances}
-                  borderTop={true}
-                  collateral={collateral}
-                  currentPrediction={outcomeTokenMarginalPrices ? outcomeTokenMarginalPrices[1] : null}
-                  fee={fee}
-                  liquidityTxs={liquidityTxs}
-                  lowerBound={scalarLow || new BigNumber(0)}
-                  positionTable={true}
-                  startingPointTitle={'Current prediction'}
-                  status={status}
-                  trades={trades}
-                  unit={getUnit(question.title)}
-                  upperBound={scalarHigh || new BigNumber(0)}
-                />
-              </>
-            ) : (
-              renderTableData()
-            )}
-            {!hasFunding && !isQuestionOpen && (
-              <WarningMessageStyled
-                additionalDescription={''}
-                description={'Trading is disabled due to lack of liquidity.'}
-                grayscale={true}
-                href={''}
-                hyperlinkDescription={''}
+      {/*<TopCard>*/}
+      {/*  <MarketTopDetailsOpen marketMakerData={marketMakerData} />*/}
+      {/*</TopCard>*/}
+
+      <MainContainer>
+        <ChartWrapper>
+          <MarketHistoryContainer marketMakerData={marketMakerData} />
+        </ChartWrapper>
+
+        <BuySellWrapper className="tabs tabs--justify tabs--bordered-bottom">
+          <Nav tabs>
+            <NavItem>
+              <NavLink className={classnames({ active: tabIndex === 0 })} onClick={() => setTabIndex(0)}>
+                Buy
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink className={classnames({ active: tabIndex === 1 })} onClick={() => setTabIndex(1)}>
+                Sell
+              </NavLink>
+            </NavItem>
+          </Nav>
+
+          <Tabs selectedIndex={tabIndex}>
+            <TabPanel>
+              <MarketBuyContainer
+                fetchGraphMarketMakerData={fetchGraphMarketMakerData}
+                fetchGraphMarketUserTxData={fetchGraphMarketUserTxData}
+                isScalar={isScalar}
+                marketMakerData={marketMakerData}
+                switchMarketTab={switchMarketTab}
               />
-            )}
-            <WhenConnected>
-              <StyledButtonContainer className={!hasFunding || isQuestionOpen ? 'border' : ''}>
-                <Button
-                  buttonType={ButtonType.secondaryLine}
-                  onClick={() => {
-                    history.goBack()
-                  }}
-                >
-                  Back
-                </Button>
-                {isQuestionOpen ? openInRealitioButton : buySellButtons}
-              </StyledButtonContainer>
-            </WhenConnected>
-          </>
-        )}
+            </TabPanel>
+            <TabPanel>
+              <MarketSellContainer
+                currentTab={currentTab}
+                fetchGraphMarketMakerData={fetchGraphMarketMakerData}
+                fetchGraphMarketUserTxData={fetchGraphMarketUserTxData}
+                isScalar={isScalar}
+                marketMakerData={marketMakerData}
+                switchMarketTab={switchMarketTab}
+              />
+            </TabPanel>
+          </Tabs>
+
+          {/*{currentTab === MarketDetailsTab.buy && (*/}
+          {/*  <MarketBuyContainer*/}
+          {/*    fetchGraphMarketMakerData={fetchGraphMarketMakerData}*/}
+          {/*    fetchGraphMarketUserTxData={fetchGraphMarketUserTxData}*/}
+          {/*    isScalar={isScalar}*/}
+          {/*    marketMakerData={marketMakerData}*/}
+          {/*    switchMarketTab={switchMarketTab}*/}
+          {/*  />*/}
+          {/*)}*/}
+          {/*{currentTab === MarketDetailsTab.sell && (*/}
+          {/*  <MarketSellContainer*/}
+          {/*    currentTab={currentTab}*/}
+          {/*    fetchGraphMarketMakerData={fetchGraphMarketMakerData}*/}
+          {/*    fetchGraphMarketUserTxData={fetchGraphMarketUserTxData}*/}
+          {/*    isScalar={isScalar}*/}
+          {/*    marketMakerData={marketMakerData}*/}
+          {/*    switchMarketTab={switchMarketTab}*/}
+          {/*  />*/}
+          {/*)}*/}
+        </BuySellWrapper>
+      </MainContainer>
+
+      <BottomCard>
+        {/*<MarketNavigation*/}
+        {/*  activeTab={currentTab}*/}
+        {/*  marketMakerData={marketMakerData}*/}
+        {/*  switchMarketTab={switchMarketTab}*/}
+        {/*></MarketNavigation>*/}
+
+        {/*{currentTab === MarketDetailsTab.swap && (*/}
+        {/*  <>*/}
+        {/*    {isScalar ? (*/}
+        {/*      <>*/}
+        {/*        <MarketScale*/}
+        {/*          balances={balances}*/}
+        {/*          borderTop={true}*/}
+        {/*          collateral={collateral}*/}
+        {/*          currentPrediction={outcomeTokenMarginalPrices ? outcomeTokenMarginalPrices[1] : null}*/}
+        {/*          fee={fee}*/}
+        {/*          liquidityTxs={liquidityTxs}*/}
+        {/*          lowerBound={scalarLow || new BigNumber(0)}*/}
+        {/*          positionTable={true}*/}
+        {/*          startingPointTitle={'Current prediction'}*/}
+        {/*          status={status}*/}
+        {/*          trades={trades}*/}
+        {/*          unit={getUnit(question.title)}*/}
+        {/*          upperBound={scalarHigh || new BigNumber(0)}*/}
+        {/*        />*/}
+        {/*      </>*/}
+        {/*    ) : (*/}
+        {/*      renderTableData()*/}
+        {/*    )}*/}
+        {/*    {!hasFunding && !isQuestionOpen && (*/}
+        {/*      <WarningMessageStyled*/}
+        {/*        additionalDescription={''}*/}
+        {/*        description={'Trading is disabled due to lack of liquidity.'}*/}
+        {/*        grayscale={true}*/}
+        {/*        href={''}*/}
+        {/*        hyperlinkDescription={''}*/}
+        {/*      />*/}
+        {/*    )}*/}
+        {/*    <WhenConnected>*/}
+        {/*      <StyledButtonContainer className={!hasFunding || isQuestionOpen ? 'border' : ''}>*/}
+        {/*        <Button*/}
+        {/*          buttonType={ButtonType.secondaryLine}*/}
+        {/*          onClick={() => {*/}
+        {/*            history.goBack()*/}
+        {/*          }}*/}
+        {/*        >*/}
+        {/*          Back*/}
+        {/*        </Button>*/}
+        {/*        {isQuestionOpen ? openInRealitioButton : buySellButtons}*/}
+        {/*      </StyledButtonContainer>*/}
+        {/*    </WhenConnected>*/}
+        {/*  </>*/}
+        {/*)}*/}
         {currentTab === MarketDetailsTab.finalize ? (
           !isScalar ? (
             <>
@@ -435,26 +552,7 @@ const Wrapper = (props: Props) => {
             switchMarketTab={switchMarketTab}
           />
         )}
-        {currentTab === MarketDetailsTab.history && <MarketHistoryContainer marketMakerData={marketMakerData} />}
-        {currentTab === MarketDetailsTab.buy && (
-          <MarketBuyContainer
-            fetchGraphMarketMakerData={fetchGraphMarketMakerData}
-            fetchGraphMarketUserTxData={fetchGraphMarketUserTxData}
-            isScalar={isScalar}
-            marketMakerData={marketMakerData}
-            switchMarketTab={switchMarketTab}
-          />
-        )}
-        {currentTab === MarketDetailsTab.sell && (
-          <MarketSellContainer
-            currentTab={currentTab}
-            fetchGraphMarketMakerData={fetchGraphMarketMakerData}
-            fetchGraphMarketUserTxData={fetchGraphMarketUserTxData}
-            isScalar={isScalar}
-            marketMakerData={marketMakerData}
-            switchMarketTab={switchMarketTab}
-          />
-        )}
+
         {currentTab === MarketDetailsTab.verify && (
           <MarketVerifyContainer
             context={context}

@@ -48,6 +48,7 @@ import { ModalTransactionResult } from '../../../modal/modal_transaction_result'
 import { CurrenciesWrapper, GenericError } from '../../common/common_styled'
 import { CurrencySelector } from '../../common/currency_selector'
 import { GridTransactionDetails } from '../../common/grid_transaction_details'
+import { IdeaAccount } from '../../common/list_item/idea_account'
 import { OutcomeTable } from '../../common/outcome_table'
 import { SetAllowance } from '../../common/set_allowance'
 import { TransactionDetailsCard } from '../../common/transaction_details_card'
@@ -63,9 +64,16 @@ const WarningMessageStyled = styled(WarningMessage)`
 const StyledButtonContainer = styled(ButtonContainer)`
   justify-content: space-between;
   margin: 0 -24px;
-
   padding: 20px 24px 0;
   margin-top: ${({ theme }) => theme.borders.borderLineDisabled};
+`
+
+const AccountsWrapper = styled.div`
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 `
 
 const logger = getLogger('Market::Buy')
@@ -85,7 +93,12 @@ const MarketBuyWrapper: React.FC<Props> = (props: Props) => {
 
   const { buildMarketMaker } = useContracts(context)
   const { fetchGraphMarketMakerData, marketMakerData, switchMarketTab } = props
-  const { address: marketMakerAddress, balances, fee, question } = marketMakerData
+  const { address: marketMakerAddress, balances, fee, outcomeTokenMarginalPrices, question } = marketMakerData
+
+  const { category, title } = question
+
+  const [first, , , second] = title.split(' ')
+
   const marketMaker = useMemo(() => buildMarketMaker(marketMakerAddress), [buildMarketMaker, marketMakerAddress])
 
   const wrapToken = getWrapToken(networkId)
@@ -332,6 +345,7 @@ const MarketBuyWrapper: React.FC<Props> = (props: Props) => {
   }
 
   const switchOutcome = (value: number) => {
+    console.log('switchOutcome', value)
     setNewShares(balances.map((balance, i) => (i === outcomeIndex ? balance.shares.add(tradedShares) : balance.shares)))
     setOutcomeIndex(value)
   }
@@ -364,24 +378,55 @@ const MarketBuyWrapper: React.FC<Props> = (props: Props) => {
 
   return (
     <>
-      <OutcomeTable
-        balances={balances}
-        collateral={collateral}
-        disabledColumns={[
-          OutcomeTableValue.Payout,
-          OutcomeTableValue.Outcome,
-          OutcomeTableValue.Probability,
-          OutcomeTableValue.Bonded,
-        ]}
-        displayBalances={displayBalances}
-        displayCollateral={baseCollateral}
-        newShares={displayNewShares}
-        outcomeHandleChange={(value: number) => switchOutcome(value)}
-        outcomeSelected={outcomeIndex}
-        probabilities={probabilities}
-        showPriceChange={amount?.gt(0)}
-        showSharesChange={amount?.gt(0)}
-      />
+      <AccountsWrapper>
+        <IdeaAccount
+          category={category}
+          checked={outcomeIndex === 0}
+          name={first}
+          onClick={() => switchOutcome(0)}
+          order
+          price={outcomeTokenMarginalPrices[0]}
+        />
+        <div
+          style={{
+            width: '50px',
+            textAlign: 'center',
+            color: 'grey',
+            fontWeight: 500,
+            fontSize: '0.8rem',
+            marginTop: '5px',
+          }}
+        >
+          vs
+        </div>
+        <IdeaAccount
+          category={category}
+          checked={outcomeIndex === 1}
+          name={second}
+          onClick={() => switchOutcome(1)}
+          order
+          price={outcomeTokenMarginalPrices[1]}
+        />
+      </AccountsWrapper>
+
+      {/*<OutcomeTable*/}
+      {/*  balances={balances}*/}
+      {/*  collateral={collateral}*/}
+      {/*  disabledColumns={[*/}
+      {/*    OutcomeTableValue.Payout,*/}
+      {/*    OutcomeTableValue.Outcome,*/}
+      {/*    OutcomeTableValue.Probability,*/}
+      {/*    OutcomeTableValue.Bonded,*/}
+      {/*  ]}*/}
+      {/*  displayBalances={displayBalances}*/}
+      {/*  displayCollateral={baseCollateral}*/}
+      {/*  newShares={displayNewShares}*/}
+      {/*  outcomeHandleChange={(value: number) => switchOutcome(value)}*/}
+      {/*  outcomeSelected={outcomeIndex}*/}
+      {/*  probabilities={probabilities}*/}
+      {/*  showPriceChange={amount?.gt(0)}*/}
+      {/*  showSharesChange={amount?.gt(0)}*/}
+      {/*/>*/}
       <WarningMessageStyled
         additionalDescription={'. Be aware that market makers may remove liquidity from the market at any time!'}
         description={
@@ -487,11 +532,16 @@ const MarketBuyWrapper: React.FC<Props> = (props: Props) => {
         />
       )}
       <StyledButtonContainer borderTop={true} marginTop={showSetAllowance || showUpgrade || isNegativeAmount}>
-        <Button buttonType={ButtonType.secondaryLine} onClick={() => switchMarketTab(MarketDetailsTab.swap)}>
-          Cancel
-        </Button>
-        <Button buttonType={ButtonType.secondaryLine} disabled={isBuyDisabled} onClick={() => finish()}>
-          Buy
+        {/*<Button buttonType={ButtonType.secondaryLine} onClick={() => switchMarketTab(MarketDetailsTab.swap)}>*/}
+        {/*  Cancel*/}
+        {/*</Button>*/}
+        <Button
+          buttonType={ButtonType.secondaryLine}
+          disabled={isBuyDisabled}
+          onClick={() => finish()}
+          style={{ width: '100%', backgroundColor: '#0357E9', color: 'white' }}
+        >
+          Submit
         </Button>
       </StyledButtonContainer>
       <ModalTransactionResult

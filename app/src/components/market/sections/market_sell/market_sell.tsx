@@ -42,6 +42,7 @@ import { FullLoading } from '../../../loading'
 import { ModalTransactionResult } from '../../../modal/modal_transaction_result'
 import { GenericError } from '../../common/common_styled'
 import { GridTransactionDetails } from '../../common/grid_transaction_details'
+import { IdeaAccount } from '../../common/list_item/idea_account'
 import { OutcomeTable } from '../../common/outcome_table'
 import { SwitchTransactionToken } from '../../common/switch_transaction_token'
 import { TokenBalance } from '../../common/token_balance'
@@ -57,6 +58,14 @@ const StyledButtonContainer = styled(ButtonContainer)`
   margin-top: ${({ theme }) => theme.borders.borderLineDisabled};
 `
 
+const AccountsWrapper = styled.div`
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+`
+
 const logger = getLogger('Market::Sell')
 
 interface Props extends RouteComponentProps<any> {
@@ -70,7 +79,21 @@ const MarketSellWrapper: React.FC<Props> = (props: Props) => {
   const cpk = useConnectedCPKContext()
   const { buildMarketMaker, conditionalTokens } = useContracts(context)
   const { fetchGraphMarketMakerData, marketMakerData, switchMarketTab } = props
-  const { address: marketMakerAddress, balances, collateral, fee } = marketMakerData
+  const {
+    address: marketMakerAddress,
+    balances,
+    collateral,
+    fee,
+    outcomeTokenMarginalPrices,
+    question,
+  } = marketMakerData
+
+  console.log('MarketSellWrapper:', marketMakerData, fetchGraphMarketMakerData)
+
+  const { category, title } = question
+
+  const [first, , , second] = title.split(' ')
+
   let defaultOutcomeIndex = 0
   for (let i = 0; i < balances.length; i++) {
     const shares = parseInt(formatBigNumber(balances[i].shares, collateral.decimals))
@@ -334,29 +357,68 @@ const MarketSellWrapper: React.FC<Props> = (props: Props) => {
       }
     }
   }
+
+  const switchBalance = (value: number) => {
+    console.log('switchBalance', value)
+
+    setOutcomeIndex(value)
+    setBalanceItem(balances[value])
+  }
+
   return (
     <>
-      <OutcomeTable
-        balances={balances}
-        collateral={collateral}
-        disabledColumns={[
-          OutcomeTableValue.Payout,
-          OutcomeTableValue.Outcome,
-          OutcomeTableValue.Probability,
-          OutcomeTableValue.Bonded,
-        ]}
-        displayBalances={displayBalances}
-        displayCollateral={displayCollateral}
-        newShares={displayNewShares}
-        outcomeHandleChange={(value: number) => {
-          setOutcomeIndex(value)
-          setBalanceItem(balances[value])
-        }}
-        outcomeSelected={outcomeIndex}
-        probabilities={probabilities}
-        showPriceChange={amountShares?.gt(0)}
-        showSharesChange={amountShares?.gt(0)}
-      />
+      <AccountsWrapper>
+        <IdeaAccount
+          category={category}
+          checked={outcomeIndex === 0}
+          name={first}
+          onClick={() => switchBalance(0)}
+          order
+          price={outcomeTokenMarginalPrices[0]}
+        />
+        <div
+          style={{
+            width: '50px',
+            textAlign: 'center',
+            color: 'grey',
+            fontWeight: 500,
+            fontSize: '0.8rem',
+            marginTop: '5px',
+          }}
+        >
+          vs
+        </div>
+        <IdeaAccount
+          category={category}
+          checked={outcomeIndex === 1}
+          name={second}
+          onClick={() => switchBalance(1)}
+          order
+          price={outcomeTokenMarginalPrices[1]}
+        />
+      </AccountsWrapper>
+
+      {/*<OutcomeTable*/}
+      {/*  balances={balances}*/}
+      {/*  collateral={collateral}*/}
+      {/*  disabledColumns={[*/}
+      {/*    OutcomeTableValue.Payout,*/}
+      {/*    OutcomeTableValue.Outcome,*/}
+      {/*    OutcomeTableValue.Probability,*/}
+      {/*    OutcomeTableValue.Bonded,*/}
+      {/*  ]}*/}
+      {/*  displayBalances={displayBalances}*/}
+      {/*  displayCollateral={displayCollateral}*/}
+      {/*  newShares={displayNewShares}*/}
+      {/*  outcomeHandleChange={(value: number) => {*/}
+      {/*    setOutcomeIndex(value)*/}
+      {/*    setBalanceItem(balances[value])*/}
+      {/*  }}*/}
+      {/*  outcomeSelected={outcomeIndex}*/}
+      {/*  probabilities={probabilities}*/}
+      {/*  showPriceChange={amountShares?.gt(0)}*/}
+      {/*  showSharesChange={amountShares?.gt(0)}*/}
+      {/*/>*/}
       <GridTransactionDetails>
         <div>
           <TokenBalance text="Your Shares" value={formatNumber(displaySelectedOutcomeBalance)} />
@@ -443,11 +505,16 @@ const MarketSellWrapper: React.FC<Props> = (props: Props) => {
         />
       )}
       <StyledButtonContainer borderTop={true} marginTop={isNegativeAmountShares}>
-        <Button buttonType={ButtonType.secondaryLine} onClick={() => switchMarketTab(MarketDetailsTab.swap)}>
-          Cancel
-        </Button>
-        <Button buttonType={ButtonType.secondaryLine} disabled={isSellButtonDisabled} onClick={() => finish()}>
-          Sell
+        {/*<Button buttonType={ButtonType.secondaryLine} onClick={() => switchMarketTab(MarketDetailsTab.swap)}>*/}
+        {/*  Cancel*/}
+        {/*</Button>*/}
+        <Button
+          buttonType={ButtonType.secondaryLine}
+          disabled={isSellButtonDisabled}
+          onClick={() => finish()}
+          style={{ width: '100%', backgroundColor: '#0357E9', color: 'white' }}
+        >
+          Submit
         </Button>
       </StyledButtonContainer>
       <ModalTransactionResult

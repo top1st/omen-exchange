@@ -28,7 +28,7 @@ const MainScrollInner = styled.div`
   align-items: center;
   padding-left: 10px;
   padding-right: 10px;
-  width: ${props => props.theme.themeBreakPoints.xxl};
+  // width: ${props => props.theme.themeBreakPoints.xxl};
 
   @media (min-width: ${props => props.theme.themeBreakPoints.xl}) {
     padding-left: ${props => props.theme.paddings.mainPadding};
